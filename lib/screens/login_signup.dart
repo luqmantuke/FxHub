@@ -1,6 +1,8 @@
+import 'package:firebaseauth/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/pallete.dart';
+import 'package:provider/provider.dart';
 
 class LoginSignUpScreen extends StatefulWidget {
   const LoginSignUpScreen({Key? key}) : super(key: key);
@@ -11,7 +13,11 @@ class LoginSignUpScreen extends StatefulWidget {
 
 class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
   bool isSignupScreen = true;
+  bool isGoogle = true;
+
   bool isRememberMe = false;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,18 +161,13 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                       margin: EdgeInsets.only(top: 30),
                       child: Column(
                         children: [
-                          BuildTextField(
-                              Icons.email_outlined, "Email", true, false),
+                          BuildTextField(Icons.email_outlined, "Email", true,
+                              false, emailController),
                           SizedBox(
                             height: 8,
                           ),
-                          BuildTextField(
-                              Icons.password_outlined, "Password", false, true),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          BuildTextField(Icons.password_outlined,
-                              "Comfirm Password", false, true),
+                          BuildTextField(Icons.password_outlined, "Password",
+                              false, true, passwordController),
                         ],
                       ),
                     )
@@ -195,7 +196,23 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                         end: Alignment.bottomRight),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Icon(Icons.arrow_forward, color: Colors.white),
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_forward),
+                    color: Colors.white,
+                    onPressed: () {
+                      if (isSignupScreen) {
+                        context.read<AuthenticationService>().signUp(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                      } else {
+                        context.read<AuthenticationService>().signIn(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                      }
+                    },
+                  ),
                 ),
               ),
             )),
@@ -212,10 +229,10 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TextButtonMethod(
-                          Icons.facebook, "Facebook", Palette.facebookColor),
+                      TextButtonMethod(Icons.facebook, "Facebook",
+                          Palette.facebookColor, false),
                       TextButtonMethod(FontAwesomeIcons.googlePlusG, "Google",
-                          Palette.googleColor)
+                          Palette.googleColor, true)
                     ],
                   ),
                 )
@@ -232,17 +249,18 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: 10),
-            child: BuildTextField(Icons.email_outlined, "Email", true, false),
+            child: BuildTextField(
+                Icons.email_outlined, "Email", true, false, emailController),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 10),
-            child: BuildTextField(
-                Icons.password_outlined, "Password", false, true),
+            child: BuildTextField(Icons.password_outlined, "Password", false,
+                true, passwordController),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 10),
-            child: BuildTextField(
-                Icons.password_outlined, "Comfirm Password", false, true),
+            child: BuildTextField(Icons.password_outlined, "Comfirm Password",
+                false, true, passwordController),
           ),
           Container(
             width: 200,
@@ -270,9 +288,13 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
   }
 
   TextButton TextButtonMethod(
-      IconData icon, String text, Color backgroundColor) {
+      IconData icon, String text, Color backgroundColor, bool isGoogle) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        if (isGoogle) {
+          context.read<AuthenticationService>().signInWithGoogle();
+        }
+      },
       style: TextButton.styleFrom(
         side: BorderSide(width: 1, color: Colors.grey),
         minimumSize: Size(155, 40),
@@ -288,9 +310,10 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
     );
   }
 
-  TextField BuildTextField(
-      IconData icons, String hintText, bool isEmail, bool isPassword) {
+  TextField BuildTextField(IconData icons, String hintText, bool isEmail,
+      bool isPassword, TextEditingController controller) {
     return TextField(
+      controller: controller,
       obscureText: isPassword,
       keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
       decoration: InputDecoration(
