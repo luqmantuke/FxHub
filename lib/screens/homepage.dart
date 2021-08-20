@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:firebaseauth/provider/trades.dart';
+import 'package:firebaseauth/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +19,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final tradeData = Provider.of<Trades>(context);
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlueAccent.withOpacity(1),
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
           ),
           elevation: 0.0,
         ),
-        body: ListTile(),
+        body: ListTrades(),
         drawer: Drawer(),
         bottomNavigationBar: BottomNavigationBar(
           elevation: 0.5,

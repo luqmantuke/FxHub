@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Trade {
   String pair;
   String id;
-  IconData result;
+  String result;
   DateTime dateTime;
 
   Trade(
