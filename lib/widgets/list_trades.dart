@@ -1,3 +1,4 @@
+import 'package:firebaseauth/screens/trade_details.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +49,21 @@ class _ListTradesState extends State<ListTrades> {
                 ],
               ),
               trailing: Icon(Icons.more_vert),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TradeDetails(
+                            pair: trades.trades[index].pair.toString(),
+                            result: trades.trades[index].result.toString(),
+                            description:
+                                trades.trades[index].description.toString(),
+                            day: trades.trades[index].dateTime.day.toString(),
+                            month:
+                                trades.trades[index].dateTime.month.toString(),
+                            year: trades.trades[index].dateTime.year
+                                .toString())));
+              },
             ),
             itemCount: trades.trades.length,
           )),

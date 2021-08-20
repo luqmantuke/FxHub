@@ -18,7 +18,7 @@ class Trades with ChangeNotifier {
       pair: 'USD/CAD',
       result: 'profit',
       description:
-          'On this page, we are going to be using the provider package. If you are new to Flutter and you don’t have a strong reason to choose another approach (Redux, Rx, hooks, etc.), this is probably the approach you should start with. The provider package is easy to understand and it doesn’t use much code. It also uses concepts that are applicable in every other approach.',
+          'On this page, we are going to be using the provider package. If you are new to Flutter and you don’t have a strong reason to choose another approach (Redux, Rx, hooks, etc.), this is probably the approach you should start with. The provider package is easy to understand and it doesn’t use much code. It also uses concepts that are applicable in every other approach. On this page, we are going to be using the provider package. If you are new to Flutter and you don’t have a strong reason to choose another approach (Redux, Rx, hooks, etc.), this is probably the approach you should start with. The provider package is easy to understand and it doesn’t use much code. It also uses concepts that are applicable in every other approach. On this page, we are going to be using the provider package. If you are new to Flutter',
       dateTime: DateTime.now(),
     ),
     Trade(
