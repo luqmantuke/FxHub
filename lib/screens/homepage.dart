@@ -34,6 +34,10 @@ class _HomePageState extends State<HomePage> {
           elevation: 0.0,
         ),
         body: ListTrades(),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add_circle_outline_rounded, size: 45),
+          onPressed: () {},
+        ),
         drawer: Drawer(),
         bottomNavigationBar: BottomNavigationBar(
           elevation: 0.5,
