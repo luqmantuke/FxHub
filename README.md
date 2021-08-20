@@ -1,4 +1,4 @@
-# firebaseauth
+# FxHub
 
 A new Flutter project.
 
