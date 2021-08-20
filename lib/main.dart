@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebaseauth/authentication.dart';
-import 'package:firebaseauth/homepage.dart';
+import 'package:firebaseauth/authentication/authentication.dart';
+import 'package:firebaseauth/provider/trades.dart';
+import 'package:firebaseauth/screens/homepage.dart';
 import 'package:firebaseauth/screens/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,11 +25,14 @@ class MyApp extends StatelessWidget {
           StreamProvider(
               create: (context) =>
                   context.read<AuthenticationService>().authStateChanges,
-              initialData: null)
+              initialData: null),
+          ChangeNotifierProvider(
+            create: (context) => Trades(),
+          ),
         ],
         child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(),
+          title: 'Fx Hub',
+          debugShowCheckedModeBanner: false,
           home: AuthenticationWrapper(),
         ));
   }
@@ -45,7 +49,7 @@ class AuthenticationWrapper extends StatelessWidget {
           if (user == null) {
             return LoginSignUpScreen();
           }
-          return Homepage();
+          return HomePage();
         } else {
           return Scaffold(
             body: Center(

@@ -1,4 +1,4 @@
-import 'package:firebaseauth/authentication.dart';
+import 'package:firebaseauth/authentication/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../config/pallete.dart';
@@ -52,7 +52,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                           ),
                           children: [
                             TextSpan(
-                              text: isSignupScreen ? " ForexTracker" : " Back",
+                              text: isSignupScreen ? " FxHub" : " Back",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.yellow[700],
