@@ -46,7 +46,7 @@ class _AddTradeState extends State<AddTrade> {
                   padding: EdgeInsets.only(bottom: 30),
                   child: Center(
                     child: Text(
-                      "Track your New Trade",
+                      "Track Your New Trade",
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
