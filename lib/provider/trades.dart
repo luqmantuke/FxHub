@@ -90,4 +90,14 @@ class Trades with ChangeNotifier {
   List<Trade> get trades {
     return [..._trades];
   }
+
+  void deleteTrade(Trade trade) {
+    _trades.remove(trade);
+    notifyListeners();
+  }
+
+  void addTrade(Trade trade) {
+    _trades.add(trade);
+    notifyListeners();
+  }
 }

@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebaseauth/provider/trades.dart';
 
+import 'deleted_successfuly.dart';
+
 class ListTrades extends StatefulWidget {
   const ListTrades({Key? key}) : super(key: key);
 
@@ -16,10 +18,8 @@ class ListTrades extends StatefulWidget {
 class _ListTradesState extends State<ListTrades> {
   @override
   Widget build(BuildContext context) {
-    // final tradeData = Provider.of<Trades>(context);
     final profit = Icon(FontAwesomeIcons.checkCircle, color: Colors.green);
     final loss = Icon(FontAwesomeIcons.timesCircle, color: Colors.red);
-
     return Consumer<Trades>(
       builder: (context, trades, child) {
         return Container(
@@ -49,20 +49,26 @@ class _ListTradesState extends State<ListTrades> {
                 ],
               ),
               trailing: Icon(Icons.more_vert),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TradeDetails(
-                            pair: trades.trades[index].pair.toString(),
-                            result: trades.trades[index].result.toString(),
-                            description:
-                                trades.trades[index].description.toString(),
-                            day: trades.trades[index].dateTime.day.toString(),
-                            month:
-                                trades.trades[index].dateTime.month.toString(),
-                            year: trades.trades[index].dateTime.year
-                                .toString())));
+              onTap: () async {
+                final delete = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => TradeDetails(
+                      pair: trades.trades[index].pair.toString(),
+                      id: trades.trades[index].id.toString(),
+                      result: trades.trades[index].result.toString(),
+                      description: trades.trades[index].description.toString(),
+                      day: trades.trades[index].dateTime.day.toString(),
+                      month: trades.trades[index].dateTime.month.toString(),
+                      year: trades.trades[index].dateTime.year.toString(),
+                      trade: trades.trades[index],
+                      tradeList: trades,
+                    ),
+                  ),
+                );
+                print(delete);
+                if (delete == 'delete') {
+                  trades.deleteTrade(trades.trades[index]);
+                }
               },
             ),
             itemCount: trades.trades.length,

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:firebaseauth/provider/trades.dart';
+import 'package:firebaseauth/screens/add_trade.dart';
 import 'package:firebaseauth/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,7 +37,14 @@ class _HomePageState extends State<HomePage> {
         body: ListTrades(),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add_circle_outline_rounded, size: 45),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddTrade(),
+              ),
+            );
+          },
         ),
         drawer: Drawer(),
         bottomNavigationBar: BottomNavigationBar(
