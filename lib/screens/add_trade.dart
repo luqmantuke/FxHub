@@ -3,10 +3,10 @@ import 'package:firebaseauth/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/trades.dart';
+import 'package:select_form_field/select_form_field.dart';
 
 class AddTrade extends StatefulWidget {
   final List<Trade> tradeList = [];
-
   @override
   _AddTradeState createState() => _AddTradeState();
 }
@@ -15,6 +15,23 @@ class _AddTradeState extends State<AddTrade> {
   final pairController = TextEditingController();
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
+  String tradeResult = "profit";
+
+  final List<Map<String, dynamic>> _results = [
+    {
+      'value': 'profit',
+      'label': 'Profit',
+      // 'icon': Icon(Icons.stop),
+      'textStyle': TextStyle(color: Colors.green, fontSize: 18),
+    },
+    {
+      'value': 'loss',
+      'label': 'Loss',
+      // 'icon': Icon(Icons.stop),
+      'textStyle': TextStyle(color: Colors.red, fontSize: 18)
+    },
+  ];
+
   void addTrade(
     String pair,
     String id,
@@ -22,6 +39,7 @@ class _AddTradeState extends State<AddTrade> {
     String description,
   ) {
     final trade = Provider.of<Trades>(context, listen: false);
+
     trade.addTrade(Trade(
         pair: pair,
         id: 'id',
@@ -57,18 +75,46 @@ class _AddTradeState extends State<AddTrade> {
                   // height: MediaQuery.of(context).size.height * 0.2,
                   child: Column(children: [
                     TextField(
-                      decoration:
-                          InputDecoration(labelText: "Pair Example USD/JPY"),
+                      decoration: InputDecoration(
+                          labelText: "Pair Example USD/JPY",
+                          labelStyle: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                       controller: pairController,
+                      onChanged: (value) {
+                        pairController.value = TextEditingValue(
+                            text: value.toUpperCase(),
+                            selection: pairController.selection);
+                      },
+                    ),
+                    SelectFormField(
+                      type: SelectFormFieldType.dropdown, // or can be dialog
+                      initialValue: 'profit',
+                      // icon: Icon(Icons.money),
+                      labelText: 'Results',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      items: _results,
+                      onChanged: (val) {
+                        setState(() {
+                          tradeResult = val;
+                        });
+                        print(tradeResult);
+                      },
+                      onSaved: (value) {
+                        if (value == null) {
+                          print("null");
+                        } else
+                          setState(() {
+                            tradeResult = value;
+                          });
+                        print(tradeResult);
+                      },
                     ),
                     TextField(
                       decoration: InputDecoration(
-                          labelText: "Results From Trade Example Loss/Profit"),
-                      controller: resultController,
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          labelText: "Describe What Made You Take The Trade"),
+                          labelText: "Describe What Made You Take The Trade",
+                          labelStyle: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                       controller: descriptionController,
                       keyboardType: TextInputType.multiline,
                       textInputAction: TextInputAction.newline,
@@ -90,13 +136,10 @@ class _AddTradeState extends State<AddTrade> {
                         ),
                       ),
                       onPressed: () {
-                        addTrade(
-                            pairController.text.toUpperCase(),
-                            'id',
-                            resultController.text.toLowerCase(),
-                            descriptionController.text);
+                        // print(tradeResult);
+                        addTrade(pairController.text.toUpperCase(), 'id',
+                            tradeResult, descriptionController.text);
                         pairController.clear();
-                        resultController.clear();
                         descriptionController.clear();
                         Navigator.push(
                             context,
@@ -110,8 +153,15 @@ class _AddTradeState extends State<AddTrade> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white),
                       ),
-                    )
+                    ),
                   ]),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                Container(
+                  child: Image.asset(
+                    "assets/images/motivation.jpg",
+                    fit: BoxFit.fill,
+                  ),
                 )
               ],
             ),
