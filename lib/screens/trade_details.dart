@@ -1,5 +1,6 @@
 import 'package:firebaseauth/models/trade.dart';
 import 'package:firebaseauth/screens/edit_trade.dart';
+import 'package:firebaseauth/screens/homepage.dart';
 import 'package:firebaseauth/widgets/deleted_successfuly.dart';
 import 'package:firebaseauth/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
@@ -225,11 +226,16 @@ class _TradeDetailsState extends State<TradeDetails> {
               ),
               onPressed: () async {
                 widget.tradeList.deleteTrade(widget.trade);
+                final snackBar = SnackBar(
+                  content: Text(
+                      'Trade ${widget.pair.toUpperCase()} Deleted Successfully!'),
+                );
 
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DeletedSuccess(pair: widget.pair),
+                    builder: (context) => HomePage(),
                   ),
                 );
               },
