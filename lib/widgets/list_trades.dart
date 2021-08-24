@@ -6,8 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebaseauth/provider/trades.dart';
 
-import 'deleted_successfuly.dart';
-
 class ListTrades extends StatefulWidget {
   const ListTrades({Key? key}) : super(key: key);
 

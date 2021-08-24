@@ -1,8 +1,6 @@
 import 'package:firebaseauth/models/trade.dart';
 import 'package:firebaseauth/screens/edit_trade.dart';
 import 'package:firebaseauth/screens/homepage.dart';
-import 'package:firebaseauth/widgets/deleted_successfuly.dart';
-import 'package:firebaseauth/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import '../provider/trades.dart';
 
