@@ -1,4 +1,5 @@
 import 'package:firebaseauth/models/trade.dart';
+import 'package:firebaseauth/screens/edit_trade.dart';
 import 'package:firebaseauth/widgets/deleted_successfuly.dart';
 import 'package:firebaseauth/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _TradeDetailsState extends State<TradeDetails> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent.withOpacity(1),
-        title: Text(widget.pair),
+        title: Text(widget.pair.toUpperCase()),
         centerTitle: true,
       ),
       body: Container(
@@ -56,7 +57,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                   width: 15,
                 ),
                 Text(
-                  widget.pair,
+                  widget.pair.toUpperCase(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -155,7 +156,18 @@ class _TradeDetailsState extends State<TradeDetails> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditTrade(
+                            pair: widget.pair,
+                            result: widget.result,
+                            description: widget.description,
+                            trade: widget.trade),
+                      ),
+                    );
+                  },
                   child: Text(
                     "UPDATE",
                     style: TextStyle(
@@ -193,13 +205,13 @@ class _TradeDetailsState extends State<TradeDetails> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete ${widget.pair}'),
+          title: Text('Delete ${widget.pair.toUpperCase()}'),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 Text('Are you sure you want to delete.'),
                 Text(
-                  widget.pair,
+                  widget.pair.toUpperCase(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -213,6 +225,7 @@ class _TradeDetailsState extends State<TradeDetails> {
               ),
               onPressed: () async {
                 widget.tradeList.deleteTrade(widget.trade);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -224,7 +237,7 @@ class _TradeDetailsState extends State<TradeDetails> {
             TextButton(
               child: Text('Cancel', style: TextStyle(fontSize: 18)),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
             ),
           ],

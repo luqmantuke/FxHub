@@ -27,7 +27,7 @@ class _ListTradesState extends State<ListTrades> {
               child: ListView.builder(
             itemBuilder: (context, index) => ListTile(
               leading: trades.trades[index].result == 'profit' ? profit : loss,
-              title: Text(trades.trades[index].pair,
+              title: Text(trades.trades[index].pair.toUpperCase(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               subtitle: Row(
                 children: [

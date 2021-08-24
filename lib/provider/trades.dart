@@ -100,4 +100,13 @@ class Trades with ChangeNotifier {
     _trades.add(trade);
     notifyListeners();
   }
+
+  void editTrade(Trade trade, String pair, String result, String description) {
+    trade.pair = pair;
+    trade.result = result;
+    trade.description = description;
+    trade.dateTime = DateTime.now();
+    trade.id = "3923";
+    notifyListeners();
+  }
 }

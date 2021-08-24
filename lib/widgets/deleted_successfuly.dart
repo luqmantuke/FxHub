@@ -28,7 +28,7 @@ class DeletedSuccess extends StatelessWidget {
             ),
             Container(
                 child: Text(
-              "You've Successfully Deleted ${pair}. Press below to go to your trade list ",
+              "You've Successfully Deleted ${pair.toUpperCase()}. Press below to go to your trade list ",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             )),
             SizedBox(
