@@ -1,7 +1,11 @@
-import 'package:firebaseauth/models/trade.dart';
-import 'package:firebaseauth/screens/edit_trade.dart';
-import 'package:firebaseauth/screens/homepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/models/trade.dart';
+import 'package:pipshub/screens/edit_trade.dart';
+import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../provider/trades.dart';
 
 class TradeDetails extends StatefulWidget {
@@ -12,20 +16,17 @@ class TradeDetails extends StatefulWidget {
   String month;
   String year;
   String id;
-  Trade trade;
-  Trades tradeList;
-
-  TradeDetails(
-      {required this.pair,
-      required this.day,
-      required this.month,
-      required this.year,
-      required this.description,
-      required this.result,
-      required this.id,
-      required this.trade,
-      required this.tradeList});
-
+  QueryDocumentSnapshot<Object?> trade;
+  TradeDetails({
+    required this.pair,
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.description,
+    required this.result,
+    required this.id,
+    required this.trade,
+  });
   @override
   _TradeDetailsState createState() => _TradeDetailsState();
 }
@@ -37,7 +38,7 @@ class _TradeDetailsState extends State<TradeDetails> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent.withOpacity(1),
-        title: Text(widget.pair.toUpperCase()),
+        title: Text(widget.pair),
         centerTitle: true,
       ),
       body: Container(
@@ -223,7 +224,14 @@ class _TradeDetailsState extends State<TradeDetails> {
                 style: TextStyle(fontSize: 18),
               ),
               onPressed: () async {
-                widget.tradeList.deleteTrade(widget.trade);
+                final FirebaseAuth _auth = FirebaseAuth.instance;
+                final uID = AuthenticationService(_auth).getCurrentUID();
+                await FirebaseFirestore.instance
+                    .collection("userData")
+                    .doc(uID.toString())
+                    .collection("trades")
+                    .doc(widget.trade.id)
+                    .delete();
                 final snackBar = SnackBar(
                   content: Text(
                       'Trade ${widget.pair.toUpperCase()} Deleted Successfully!'),

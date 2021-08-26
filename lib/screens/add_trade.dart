@@ -1,5 +1,5 @@
-import 'package:firebaseauth/models/trade.dart';
-import 'package:firebaseauth/screens/homepage.dart';
+import 'package:pipshub/models/trade.dart';
+import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/trades.dart';

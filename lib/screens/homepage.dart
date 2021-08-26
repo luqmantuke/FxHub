@@ -1,8 +1,9 @@
 import 'dart:ui';
 
-import 'package:firebaseauth/provider/trades.dart';
-import 'package:firebaseauth/screens/add_trade.dart';
-import 'package:firebaseauth/widgets/list_trades.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/provider/trades.dart';
+import 'package:pipshub/screens/add_trade.dart';
+import 'package:pipshub/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.lightBlueAccent.withOpacity(1),
           centerTitle: true,
           title: Text(
-            'FxHub',
+            'PIPSHUB',
             style: TextStyle(
               color: Palette.facebookColor,
               fontWeight: FontWeight.bold,
@@ -46,7 +47,13 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ),
-        drawer: Drawer(),
+        drawer: Drawer(
+          child: TextButton(
+              child: Text("Sign Out"),
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              }),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           elevation: 0.5,
           selectedItemColor: Palette.activeColor,

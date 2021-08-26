@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebaseauth/authentication/authentication.dart';
-import 'package:firebaseauth/provider/trades.dart';
-import 'package:firebaseauth/screens/homepage.dart';
-import 'package:firebaseauth/screens/login_signup.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/provider/trades.dart';
+import 'package:pipshub/screens/homepage.dart';
+import 'package:pipshub/screens/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';

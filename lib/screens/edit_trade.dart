@@ -1,6 +1,9 @@
-import 'package:firebaseauth/models/trade.dart';
-import 'package:firebaseauth/provider/trades.dart';
-import 'package:firebaseauth/screens/homepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/models/trade.dart';
+import 'package:pipshub/provider/trades.dart';
+import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
@@ -9,7 +12,7 @@ class EditTrade extends StatefulWidget {
   String pair;
   String result;
   String description;
-  Trade trade;
+  QueryDocumentSnapshot<Object?> trade;
 
   EditTrade(
       {required this.pair,
@@ -157,9 +160,20 @@ class _EditTradeState extends State<EditTrade> {
                     ),
                   ),
                 ),
-                onPressed: () {
-                  editTrades(widget.pair, widget.result, widget.description,
-                      widget.trade);
+                onPressed: () async {
+                  final FirebaseAuth _auth = FirebaseAuth.instance;
+                  final uID = AuthenticationService(_auth).getCurrentUID();
+                  await FirebaseFirestore.instance
+                      .collection("userData")
+                      .doc(uID.toString())
+                      .collection("trades")
+                      .doc(widget.trade.id)
+                      .update({
+                    'pair': widget.pair,
+                    'result': widget.result,
+                    'description': widget.description,
+                    'dateTime': DateTime.now()
+                  });
                   final snackBar = SnackBar(
                     content: const Text('Trade Updated Successfully!'),
                   );

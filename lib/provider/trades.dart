@@ -1,3 +1,4 @@
+import 'package:pipshub/services/firebaseapi.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../models/trade.dart';
@@ -91,15 +92,9 @@ class Trades with ChangeNotifier {
     return [..._trades];
   }
 
-  void deleteTrade(Trade trade) {
-    _trades.remove(trade);
-    notifyListeners();
-  }
+  void deleteTrade(Trade trade) => FirebaseApi.deleteTrade(trade);
 
-  void addTrade(Trade trade) {
-    _trades.add(trade);
-    notifyListeners();
-  }
+  void addTrade(Trade trade) => FirebaseApi.createTrade(trade);
 
   void editTrade(Trade trade, String pair, String result, String description) {
     trade.pair = pair;
