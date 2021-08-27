@@ -161,8 +161,8 @@ class _EditTradeState extends State<EditTrade> {
                   ),
                 ),
                 onPressed: () async {
-                  final FirebaseAuth _auth = FirebaseAuth.instance;
-                  final uID = AuthenticationService(_auth).getCurrentUID();
+                  final uID =
+                      context.read<AuthenticationService>().getCurrentUID();
                   await FirebaseFirestore.instance
                       .collection("userData")
                       .doc(uID.toString())

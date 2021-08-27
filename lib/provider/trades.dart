@@ -92,8 +92,6 @@ class Trades with ChangeNotifier {
     return [..._trades];
   }
 
-  void deleteTrade(Trade trade) => FirebaseApi.deleteTrade(trade);
-
   void addTrade(Trade trade) => FirebaseApi.createTrade(trade);
 
   void editTrade(Trade trade, String pair, String result, String description) {

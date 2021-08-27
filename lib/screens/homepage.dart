@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/add_trade.dart';
@@ -38,7 +39,9 @@ class _HomePageState extends State<HomePage> {
         body: ListTrades(),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add_circle_outline_rounded, size: 45),
-          onPressed: () {
+          onPressed: () async {
+            final user = await FirebaseAuth.instance.currentUser!.uid;
+            print("UID B4 $user");
             Navigator.push(
               context,
               MaterialPageRoute(
