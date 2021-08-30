@@ -43,157 +43,159 @@ class _TradeDetailsState extends State<TradeDetails> {
       ),
       body: Container(
         padding: EdgeInsets.only(left: 30, top: 60),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Pair: ',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  widget.pair.toUpperCase(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Results: ',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  widget.result,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Date: ',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  widget.day,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '-',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.month,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '-',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.year,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text(
-                  'Description: ',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.only(right: 10, top: 15),
-              height: MediaQuery.of(context).size.height * 0.6,
-              width: MediaQuery.of(context).size.width * 1,
-              child: Text(
-                widget.description,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditTrade(
-                            pair: widget.pair,
-                            result: widget.result,
-                            description: widget.description,
-                            trade: widget.trade),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "UPDATE",
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Pair: ',
                     style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold),
+                      fontSize: 18,
+                    ),
                   ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    widget.pair.toUpperCase(),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Results: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    widget.result,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Date: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    widget.day,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '-',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.month,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '-',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    widget.year,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Description: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(right: 10, top: 15),
+                height: MediaQuery.of(context).size.height * 0.6,
+                width: MediaQuery.of(context).size.width * 1,
+                child: Text(
+                  widget.description,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Container(
-                  padding: EdgeInsets.only(right: 15),
-                  child: TextButton(
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
                     onPressed: () {
-                      _showMyDialog();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditTrade(
+                              pair: widget.pair,
+                              result: widget.result,
+                              description: widget.description,
+                              trade: widget.trade),
+                        ),
+                      );
                     },
                     child: Text(
-                      "DELETE",
+                      "UPDATE",
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.blue,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                ),
-              ],
-            )
-          ],
+                  Container(
+                    padding: EdgeInsets.only(right: 15),
+                    child: TextButton(
+                      onPressed: () {
+                        _showMyDialog();
+                      },
+                      child: Text(
+                        "DELETE",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
