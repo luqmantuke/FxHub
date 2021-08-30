@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/screens/trade_details.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pipshub/provider/trades.dart';
 
 class ListTrades extends StatefulWidget {
   const ListTrades({Key? key}) : super(key: key);
@@ -30,6 +27,7 @@ class _ListTradesState extends State<ListTrades> {
                       Provider.of<AuthenticationService>(context, listen: false)
                           .getCurrentUID())
                   .collection("trades")
+                  .orderBy('dateTime', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
