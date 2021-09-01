@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
-import 'package:pipshub/models/trade.dart';
-import 'package:pipshub/screens/edit_trade.dart';
 import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../provider/trades.dart';
+import 'package:pipshub/screens/trades/edit_trade.dart';
 
 class TradeDetails extends StatefulWidget {
   String pair;

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
@@ -8,27 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
 
-class EditTrade extends StatefulWidget {
-  String pair;
-  String result;
-  String description;
-  QueryDocumentSnapshot<Object?> trade;
-
-  EditTrade(
-      {required this.pair,
-      required this.result,
-      required this.description,
-      required this.trade});
+class AddTrade extends StatefulWidget {
   @override
-  _EditTradeState createState() => _EditTradeState();
+  _AddTradeState createState() => _AddTradeState();
 }
 
-class _EditTradeState extends State<EditTrade> {
+class _AddTradeState extends State<AddTrade> {
   final pairController = TextEditingController();
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  // String tradeResult = result;
+  String tradeResult = "profit";
 
   final List<Map<String, dynamic>> _results = [
     {
@@ -45,22 +33,20 @@ class _EditTradeState extends State<EditTrade> {
     },
   ];
 
-  @override
-  void initstate() {
-    pairController.text = widget.pair;
-    resultController.text = widget.result;
-    descriptionController.text = widget.description;
-    return super.initState();
-  }
-
-  void editTrades(
+  void addTrade(
     String pair,
+    String id,
     String result,
     String description,
-    Trade trade,
   ) {
-    final edit = Provider.of<Trades>(context, listen: false);
-    edit.editTrade(trade, pair, result, description);
+    final trade = Provider.of<Trades>(context, listen: false);
+
+    trade.addTrade(Trade(
+        pair: pair,
+        id: 'id',
+        result: result,
+        description: description,
+        dateTime: DateTime.now()));
   }
 
   @override
@@ -72,7 +58,7 @@ class _EditTradeState extends State<EditTrade> {
           top: 20,
         ),
         child: SingleChildScrollView(
-          child: Form(key: _formKey, child: tradeForm(context)),
+          child: tradeForm(context),
         ),
       ),
     );
@@ -86,7 +72,7 @@ class _EditTradeState extends State<EditTrade> {
             padding: EdgeInsets.only(bottom: 30),
             child: Center(
               child: Text(
-                "Edit Your  Trade",
+                "Track Your New Trade",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -97,51 +83,45 @@ class _EditTradeState extends State<EditTrade> {
             child: Column(children: [
               TextField(
                 decoration: InputDecoration(
-                    hintText: widget.pair,
-                    hintStyle:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    labelText: "Pair",
+                    labelText: "Pair Example USD/JPY",
                     labelStyle:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                controller:
-                    TextEditingController(text: widget.pair.toUpperCase()),
+                controller: pairController,
                 onChanged: (value) {
-                  widget.pair = value.toUpperCase();
+                  pairController.value = TextEditingValue(
+                      text: value.toUpperCase(),
+                      selection: pairController.selection);
                 },
               ),
               SelectFormField(
                 type: SelectFormFieldType.dropdown, // or can be dialog
-                initialValue: widget.result,
+                initialValue: 'profit',
                 // icon: Icon(Icons.money),
                 labelText: 'Results',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 items: _results,
                 onChanged: (val) {
                   setState(() {
-                    widget.result = val;
+                    tradeResult = val;
                   });
-                  print(widget.result);
+                  print(tradeResult);
                 },
                 onSaved: (value) {
                   if (value == null) {
                     print("null");
                   } else
                     setState(() {
-                      widget.result = value;
+                      tradeResult = value;
                     });
-                  print(widget.result);
+                  print(tradeResult);
                 },
               ),
               TextField(
-                onChanged: (value) {
-                  widget.description = value;
-                },
                 decoration: InputDecoration(
-                    labelText: "Description",
-                    hintText: widget.description,
+                    labelText: "Describe What Made You Take The Trade",
                     labelStyle:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                controller: TextEditingController(text: widget.description),
+                controller: descriptionController,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
                 minLines: 1,
@@ -162,32 +142,32 @@ class _EditTradeState extends State<EditTrade> {
                 ),
                 onPressed: () async {
                   final uID =
-                      context.read<AuthenticationService>().getCurrentUID();
+                      Provider.of<AuthenticationService>(context, listen: false)
+                          .getCurrentUID();
                   await FirebaseFirestore.instance
                       .collection("userData")
-                      .doc(uID.toString())
+                      .doc(uID)
                       .collection("trades")
-                      .doc(widget.trade.id)
-                      .update({
-                    'pair': widget.pair,
-                    'result': widget.result,
-                    'description': widget.description,
+                      .add({
+                    'pair': pairController.text,
+                    'result': resultController.text,
+                    'description': descriptionController.text,
                     'dateTime': DateTime.now()
                   });
+                  // addTrade(pairController.text.toUpperCase(), 'id', tradeResult,
+                  //     descriptionController.text);
+                  // pairController.clear();
+                  // descriptionController.clear();
                   final snackBar = SnackBar(
-                    content: const Text('Trade Updated Successfully!'),
+                    content: const Text('Trade Added Successfully!'),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
                 },
                 child: Text(
-                  "Update",
+                  "Submit",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -196,6 +176,13 @@ class _EditTradeState extends State<EditTrade> {
               ),
             ]),
           ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Container(
+            child: Image.asset(
+              "assets/images/motivation.jpg",
+              fit: BoxFit.fill,
+            ),
+          )
         ],
       ),
     );

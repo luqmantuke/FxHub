@@ -1,8 +1,6 @@
 import 'package:pipshub/services/firebaseapi.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../models/trade.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Trades with ChangeNotifier {
   List<Trade> _trades = [
