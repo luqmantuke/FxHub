@@ -33,7 +33,6 @@ class AuthenticationService {
   // SIGNOUT METHOD
   Future signOut() async {
     await _auth.signOut();
-    print('Signout');
   }
 
   // GET CURRENT UID

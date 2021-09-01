@@ -119,16 +119,13 @@ class _EditTradeState extends State<EditTrade> {
                   setState(() {
                     widget.result = val;
                   });
-                  print(widget.result);
                 },
                 onSaved: (value) {
                   if (value == null) {
-                    print("null");
                   } else
                     setState(() {
                       widget.result = value;
                     });
-                  print(widget.result);
                 },
               ),
               TextField(

@@ -33,22 +33,6 @@ class _AddTradeState extends State<AddTrade> {
     },
   ];
 
-  void addTrade(
-    String pair,
-    String id,
-    String result,
-    String description,
-  ) {
-    final trade = Provider.of<Trades>(context, listen: false);
-
-    trade.addTrade(Trade(
-        pair: pair,
-        id: 'id',
-        result: result,
-        description: description,
-        dateTime: DateTime.now()));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,16 +88,13 @@ class _AddTradeState extends State<AddTrade> {
                   setState(() {
                     tradeResult = val;
                   });
-                  print(tradeResult);
                 },
                 onSaved: (value) {
                   if (value == null) {
-                    print("null");
                   } else
                     setState(() {
                       tradeResult = value;
                     });
-                  print(tradeResult);
                 },
               ),
               TextField(

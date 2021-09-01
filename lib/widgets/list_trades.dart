@@ -36,8 +36,7 @@ class _ListTradesState extends State<ListTrades> {
                     itemBuilder: (context, index) {
                       final docSnapshot = snapshot.data!.docs[index];
                       final docs = snapshot.data!.docs[index].data();
-                      print("docs $docs");
-                      print(docSnapshot.data());
+
                       DateTime myDateTime =
                           docSnapshot.get('dateTime').toDate();
                       return ListTile(

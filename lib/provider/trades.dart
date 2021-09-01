@@ -90,8 +90,6 @@ class Trades with ChangeNotifier {
     return [..._trades];
   }
 
-  void addTrade(Trade trade) => FirebaseApi.createTrade(trade);
-
   void editTrade(Trade trade, String pair, String result, String description) {
     trade.pair = pair;
     trade.result = result;
