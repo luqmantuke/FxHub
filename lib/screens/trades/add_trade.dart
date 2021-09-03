@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
@@ -122,23 +120,12 @@ class _AddTradeState extends State<AddTrade> {
                   ),
                 ),
                 onPressed: () async {
-                  final uID =
-                      Provider.of<AuthenticationService>(context, listen: false)
-                          .getCurrentUID();
-                  await FirebaseFirestore.instance
-                      .collection("userData")
-                      .doc(uID)
-                      .collection("trades")
-                      .add({
-                    'pair': pairController.text,
-                    'result': resultController.text,
-                    'description': descriptionController.text,
-                    'dateTime': DateTime.now()
-                  });
-                  // addTrade(pairController.text.toUpperCase(), 'id', tradeResult,
-                  //     descriptionController.text);
-                  // pairController.clear();
-                  // descriptionController.clear();
+                  final addTrade = Provider.of<Trades>(context, listen: false);
+                  await addTrade.addTrade(TradeModel(
+                      pair: pairController.text,
+                      result: resultController.text,
+                      description: descriptionController.text,
+                      dateTime: DateTime.now()));
                   final snackBar = SnackBar(
                     content: const Text('Trade Added Successfully!'),
                   );

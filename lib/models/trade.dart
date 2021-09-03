@@ -1,27 +1,24 @@
-class Trade {
+class TradeModel {
   String pair;
-  String id;
   String result;
   String description;
   DateTime dateTime;
 
-  Trade(
+  TradeModel(
       {required this.pair,
-      required this.id,
       required this.result,
       required this.description,
       required this.dateTime});
 
-  static Trade fromJson(Map<String, dynamic> json) => Trade(
-      pair: json['pair'],
-      id: json['id'],
-      result: json['result'],
-      description: json['description'],
-      dateTime: json['dateTime']);
-
+  factory TradeModel.fromMap(Map<String, dynamic> map) {
+    return TradeModel(
+        pair: map['pair'] ?? '',
+        result: map['result'] ?? '',
+        description: map['description'] ?? '',
+        dateTime: map['dateTime'].toDate() ?? '');
+  }
   Map<String, dynamic> toJson() => {
         'pair': pair,
-        'id': id,
         'result': result,
         'description': description,
         'dateTime': DateTime.now()

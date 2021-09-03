@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/screens/course/course_list.dart';
 import 'package:pipshub/screens/news/news_list.dart';
@@ -46,18 +43,19 @@ class _HomePageState extends State<HomePage> {
         elevation: 0.0,
       ),
       body: _screenOptions.elementAt(_selectedIndex),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_circle_outline_rounded, size: 45),
-        onPressed: () async {
-          final user = await FirebaseAuth.instance.currentUser!.uid;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddTrade(),
-            ),
-          );
-        },
-      ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
+              child: Icon(Icons.add_circle_outline_rounded, size: 45),
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddTrade(),
+                  ),
+                );
+              },
+            )
+          : null,
       drawer: Drawer(
         child: TextButton(
             child: Text("Sign Out"),

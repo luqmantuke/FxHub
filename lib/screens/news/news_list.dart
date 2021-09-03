@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import 'package:pipshub/models/news.dart';
+import 'package:pipshub/provider/news.dart';
+import 'package:provider/provider.dart';
 
 class NewsList extends StatefulWidget {
   const NewsList({Key? key}) : super(key: key);
@@ -13,14 +16,16 @@ class NewsList extends StatefulWidget {
 class _NewsListState extends State<NewsList> {
   @override
   Widget build(BuildContext context) {
+    final newsProvider = Provider.of<NewsCrudModel>(context);
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("tradeNews")
-              .orderBy('dateTime', descending: true)
-              .snapshots(),
+          stream: newsProvider.fetchNewsasSteam(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              final news = snapshot.data!.docs
+                  .map((news) =>
+                      NewsModel.fromMap(news.data() as Map<String, dynamic>))
+                  .toList();
               return Container(
                 padding: EdgeInsets.only(top: 5, right: 15, left: 15),
                 child: Column(
@@ -84,18 +89,17 @@ class _NewsListState extends State<NewsList> {
                       height: MediaQuery.of(context).size.height / 1.6,
                       child: Card(
                           child: ListView.builder(
-                              itemCount: snapshot.data!.docs.length,
+                              itemCount: news.length,
                               itemBuilder: (context, index) {
-                                final docSnapshot = snapshot.data!.docs[index];
+                                final docSnapshot = news[index];
                                 TextStyle sentimentStyle() {
-                                  if (docSnapshot.get('sentiment') == 'MOD') {
+                                  if (docSnapshot.sentiment == 'MOD') {
                                     return TextStyle(
                                         backgroundColor: Colors.orangeAccent,
                                         color: Colors.black,
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold);
-                                  } else if (docSnapshot.get('sentiment') ==
-                                      'LOW') {
+                                  } else if (docSnapshot.sentiment == 'LOW') {
                                     return TextStyle(
                                         backgroundColor: Colors.greenAccent,
                                         color: Colors.black,
@@ -110,8 +114,7 @@ class _NewsListState extends State<NewsList> {
                                   }
                                 }
 
-                                DateTime myDateTime =
-                                    docSnapshot.get('dateTime').toDate();
+                                DateTime myDateTime = docSnapshot.dateTime;
                                 String formattedDateTime =
                                     DateFormat('yyyy-MM-dd – kk:mm')
                                         .format(myDateTime);
@@ -120,14 +123,14 @@ class _NewsListState extends State<NewsList> {
                                   leading: CachedNetworkImage(
                                     height:
                                         MediaQuery.of(context).size.height / 3,
-                                    imageUrl: docSnapshot.get('image'),
+                                    imageUrl: docSnapshot.image,
                                     placeholder: (context, url) =>
                                         CircularProgressIndicator(),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
                                   ),
                                   title: Text(
-                                    docSnapshot.get('title'),
+                                    docSnapshot.title,
                                     style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold),
@@ -137,7 +140,7 @@ class _NewsListState extends State<NewsList> {
                                       text: '',
                                       children: [
                                         TextSpan(
-                                          text: docSnapshot.get('sentiment'),
+                                          text: docSnapshot.sentiment,
                                           style: sentimentStyle(),
                                         ),
                                         TextSpan(
@@ -148,7 +151,7 @@ class _NewsListState extends State<NewsList> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         TextSpan(
-                                          text: docSnapshot.get('prediction'),
+                                          text: docSnapshot.prediction,
                                           style: TextStyle(
                                             fontSize: 15,
                                             color: Colors.black,
@@ -174,7 +177,7 @@ class _NewsListState extends State<NewsList> {
                                   ),
                                   isThreeLine: true,
                                   trailing: Text(
-                                    docSnapshot.get('pair'),
+                                    docSnapshot.pair,
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,

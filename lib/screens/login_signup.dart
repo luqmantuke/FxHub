@@ -73,6 +73,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   TextButton TextButtonMethod(
     IconData icon,
     String text,

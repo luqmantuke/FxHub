@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
 
+// ignore: must_be_immutable
 class EditTrade extends StatefulWidget {
   String pair;
   String result;
@@ -45,21 +45,12 @@ class _EditTradeState extends State<EditTrade> {
   ];
 
   @override
+  // ignore: override_on_non_overriding_member
   void initstate() {
     pairController.text = widget.pair;
     resultController.text = widget.result;
     descriptionController.text = widget.description;
     return super.initState();
-  }
-
-  void editTrades(
-    String pair,
-    String result,
-    String description,
-    Trade trade,
-  ) {
-    final edit = Provider.of<Trades>(context, listen: false);
-    edit.editTrade(trade, pair, result, description);
   }
 
   @override
@@ -157,19 +148,15 @@ class _EditTradeState extends State<EditTrade> {
                   ),
                 ),
                 onPressed: () async {
-                  final uID =
-                      context.read<AuthenticationService>().getCurrentUID();
-                  await FirebaseFirestore.instance
-                      .collection("userData")
-                      .doc(uID.toString())
-                      .collection("trades")
-                      .doc(widget.trade.id)
-                      .update({
-                    'pair': widget.pair,
-                    'result': widget.result,
-                    'description': widget.description,
-                    'dateTime': DateTime.now()
-                  });
+                  final editTrade = Provider.of<Trades>(context, listen: false);
+                  await editTrade.editTrade(
+                      widget.trade.id,
+                      TradeModel(
+                          pair: widget.pair,
+                          result: widget.result,
+                          description: widget.description,
+                          dateTime: DateTime.now()));
+
                   final snackBar = SnackBar(
                     content: const Text('Trade Updated Successfully!'),
                   );

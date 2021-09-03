@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:pipshub/screens/trades/edit_trade.dart';
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class TradeDetails extends StatefulWidget {
   String pair;
   String result;
@@ -145,9 +146,11 @@ class _TradeDetailsState extends State<TradeDetails> {
                 padding: EdgeInsets.only(right: 10, top: 15),
                 height: MediaQuery.of(context).size.height * 0.6,
                 width: MediaQuery.of(context).size.width * 1,
-                child: Text(
-                  widget.description,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                child: SingleChildScrollView(
+                  child: Text(
+                    widget.description,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               Row(
@@ -223,14 +226,8 @@ class _TradeDetailsState extends State<TradeDetails> {
                 style: TextStyle(fontSize: 18),
               ),
               onPressed: () async {
-                final FirebaseAuth _auth = FirebaseAuth.instance;
-                final uID = AuthenticationService(_auth).getCurrentUID();
-                await FirebaseFirestore.instance
-                    .collection("userData")
-                    .doc(uID.toString())
-                    .collection("trades")
-                    .doc(widget.trade.id)
-                    .delete();
+                final deleteTrade = Provider.of<Trades>(context, listen: false);
+                await deleteTrade.deleteTrade(widget.trade.id);
                 final snackBar = SnackBar(
                   content: Text(
                       'Trade ${widget.pair.toUpperCase()} Deleted Successfully!'),

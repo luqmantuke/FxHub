@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/provider/news.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
 import 'package:pipshub/screens/login_signup.dart';
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
               initialData: null),
           ChangeNotifierProvider(
             create: (context) => Trades(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => NewsCrudModel(),
           ),
         ],
         child: MaterialApp(
