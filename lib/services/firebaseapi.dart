@@ -2,12 +2,57 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseApi {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  // STREAM TRADENEWS METHOD
 
-  Stream<QuerySnapshot> streamtradeNewsCollection() {
+  // STREAM TRADENEWS METHOD
+  Stream<QuerySnapshot> streamtradeNewsTodayCollection() {
+    DateTime _now = DateTime.now();
+    DateTime _start = DateTime(_now.year, _now.month, _now.day, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day, 23, 59, 59);
     return _db
         .collection('tradeNews')
+        .where('dateTime', isGreaterThanOrEqualTo: _start)
+        .where('dateTime', isLessThanOrEqualTo: _end)
         .orderBy('dateTime', descending: true)
+        .snapshots();
+  }
+
+  // STREAM TRADENEWS METHOD YESTERDAY
+  Stream<QuerySnapshot> streamtradeNewsYesterdayCollection() {
+    DateTime _now = DateTime.now();
+    DateTime _start = DateTime(_now.year, _now.month, _now.day - 1, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day - 1, 23, 59, 59);
+    print("dkjfd");
+    return _db
+        .collection('tradeNews')
+        .where('dateTime', isGreaterThanOrEqualTo: _start)
+        .where('dateTime', isLessThanOrEqualTo: _end)
+        .orderBy('dateTime', descending: true)
+        .snapshots();
+  }
+
+  // STREAM TRADENEWS METHOD TOMORROW
+  Stream<QuerySnapshot> streamtradeNewsTomorrowCollection() {
+    DateTime _now = DateTime.now();
+    DateTime _start = DateTime(_now.year, _now.month, _now.day + 1, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day + 1, 23, 59, 59);
+    return _db
+        .collection('tradeNews')
+        .where('dateTime', isGreaterThanOrEqualTo: _start)
+        .where('dateTime', isLessThanOrEqualTo: _end)
+        .orderBy('dateTime', descending: true)
+        .snapshots();
+  }
+
+  // STREAM TRADENEWS METHOD THIS WEEK
+  Stream<QuerySnapshot> streamtradeNewsWeekCollection() {
+    DateTime _now = DateTime.now();
+    DateTime _start = DateTime(_now.year, _now.month, _now.day - 1, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day + 5, 23, 59, 59);
+    return _db
+        .collection('tradeNews')
+        .where('dateTime', isGreaterThanOrEqualTo: _start)
+        .where('dateTime', isLessThanOrEqualTo: _end)
+        .orderBy('dateTime', descending: false)
         .snapshots();
   }
 

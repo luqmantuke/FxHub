@@ -14,12 +14,59 @@ class NewsList extends StatefulWidget {
 }
 
 class _NewsListState extends State<NewsList> {
+  var newsDateFilter = 'today';
   @override
   Widget build(BuildContext context) {
+    print(newsDateFilter);
     final newsProvider = Provider.of<NewsCrudModel>(context);
+    streamFilter() {
+      if (newsDateFilter == 'today') {
+        return newsProvider.fetchNewsasSteamToday();
+      } else if (newsDateFilter == 'yesterday') {
+        return newsProvider.fetchNewsasSteamYesterday();
+      } else if (newsDateFilter == 'tomorrow') {
+        return newsProvider.fetchNewsasSteamTomorrow();
+      } else if (newsDateFilter == 'week') {
+        return newsProvider.fetchNewsasSteamWeek();
+      }
+    }
+
+    DateTime _now = DateTime.now();
+    DateTime yesterday = DateTime(_now.year, _now.month, _now.day - 1, 0, 0);
+    DateTime today = DateTime(_now.year, _now.month, _now.day, 0, 0);
+    DateTime tomorrow = DateTime(_now.year, _now.month, _now.day + 1, 0, 0);
+
+    date() {
+      if (newsDateFilter == 'today') {
+        return Text(DateFormat('yyyy-MM-dd').format(today),
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ));
+      } else if (newsDateFilter == 'yesterday') {
+        return Text(DateFormat('yyyy-MM-dd').format(yesterday),
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ));
+      } else if (newsDateFilter == 'tomorrow') {
+        return Text(DateFormat('yyyy-MM-dd').format(tomorrow),
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ));
+      } else if (newsDateFilter == 'week') {
+        return Text("Monday-Friday",
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ));
+      }
+    }
+
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
-          stream: newsProvider.fetchNewsasSteam(),
+          stream: streamFilter(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final news = snapshot.data!.docs
@@ -50,19 +97,35 @@ class _NewsListState extends State<NewsList> {
                       children: [
                         GestureDetector(
                           child: dateFilter("YESTERDAY"),
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              newsDateFilter = 'yesterday';
+                            });
+                          },
                         ),
                         GestureDetector(
                           child: dateFilter("TODAY"),
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              newsDateFilter = 'today';
+                            });
+                          },
                         ),
                         GestureDetector(
                           child: dateFilter("TOMORROW"),
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              newsDateFilter = 'tomorrow';
+                            });
+                          },
                         ),
                         GestureDetector(
                           child: dateFilter("THIS WEEK"),
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              newsDateFilter = 'week';
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -74,11 +137,7 @@ class _NewsListState extends State<NewsList> {
                       height: MediaQuery.of(context).size.height / 30,
                       color: Colors.green.shade50,
                       child: Center(
-                        child: Text("TUESDAY, 31 AUG 2021(12 EVENTS)",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                            )),
+                        child: date(),
                       ),
                     ),
 
@@ -91,6 +150,7 @@ class _NewsListState extends State<NewsList> {
                           child: ListView.builder(
                               itemCount: news.length,
                               itemBuilder: (context, index) {
+                                print(snapshot.data!.docs.length);
                                 final docSnapshot = news[index];
                                 TextStyle sentimentStyle() {
                                   if (docSnapshot.sentiment == 'MOD') {

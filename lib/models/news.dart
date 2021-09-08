@@ -18,12 +18,12 @@ class NewsModel {
 
   factory NewsModel.fromMap(Map<String, dynamic> map) {
     return NewsModel(
-        dateTime: map['dateTime'].toDate(),
-        details: map['details'],
-        image: map['image'],
-        pair: map['pair'],
-        prediction: map['prediction'],
-        sentiment: map['sentiment'],
-        title: map['title']);
+        dateTime: map['dateTime'].toDate() ?? '',
+        details: map['details'] ?? '',
+        image: map['image'] ?? '',
+        pair: map['pair'] ?? '',
+        prediction: map['prediction'] ?? '',
+        sentiment: map['sentiment'] ?? '',
+        title: map['title'] ?? '');
   }
 }
