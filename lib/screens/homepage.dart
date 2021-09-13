@@ -1,4 +1,3 @@
-import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/screens/course/course_list.dart';
 import 'package:pipshub/screens/news/news_list.dart';
 import 'package:pipshub/screens/trades/add_trade.dart';
@@ -6,7 +5,6 @@ import 'package:pipshub/screens/trades/add_trade.dart';
 import 'package:pipshub/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import '../config/pallete.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,6 +39,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         elevation: 0.0,
+        automaticallyImplyLeading: _selectedIndex == 0 ? false : true,
       ),
       body: _screenOptions.elementAt(_selectedIndex),
       floatingActionButton: _selectedIndex == 0
@@ -56,13 +55,6 @@ class _HomePageState extends State<HomePage> {
               },
             )
           : null,
-      drawer: Drawer(
-        child: TextButton(
-            child: Text("Sign Out"),
-            onPressed: () {
-              context.read<AuthenticationService>().signOut();
-            }),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 0.5,
         selectedItemColor: Palette.activeColor,

@@ -39,4 +39,9 @@ class AuthenticationService {
   String getCurrentUID() {
     return FirebaseAuth.instance.currentUser!.uid;
   }
+
+  // GET CURRENT USERNAME
+  String getCurrentUname() {
+    return FirebaseAuth.instance.currentUser!.displayName.toString();
+  }
 }

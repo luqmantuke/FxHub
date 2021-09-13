@@ -6,12 +6,44 @@ import 'package:pipshub/services/firebaseapi.dart';
 import 'package:flutter/material.dart';
 
 class Trades with ChangeNotifier {
-// Get Trades As Stream
-  Stream<QuerySnapshot> fetchTradesasSteam() {
+// Get TODAY Trades As Stream
+  Stream<QuerySnapshot> fetchTodayTradesasSteam() {
     final _firebaseApi = FirebaseApi();
     FirebaseAuth _auth = FirebaseAuth.instance;
     final uID = AuthenticationService(_auth).getCurrentUID();
-    return _firebaseApi.streamtradesCollection(uID);
+    return _firebaseApi.streamTradesTodayCollection(uID);
+  }
+
+  // Get YESTERDAY Trades As Stream
+  Stream<QuerySnapshot> fetchYesterdayTradesasSteam() {
+    final _firebaseApi = FirebaseApi();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final uID = AuthenticationService(_auth).getCurrentUID();
+    return _firebaseApi.streamTradesYesterdayCollection(uID);
+  }
+
+  // Get WEEK Trades As Stream
+  Stream<QuerySnapshot> fetchWeekTradesasSteam() {
+    final _firebaseApi = FirebaseApi();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final uID = AuthenticationService(_auth).getCurrentUID();
+    return _firebaseApi.streamTradesWeekCollection(uID);
+  }
+
+  // Get MONTH Trades As Stream
+  Stream<QuerySnapshot> fetchMonthTradesasSteam() {
+    final _firebaseApi = FirebaseApi();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final uID = AuthenticationService(_auth).getCurrentUID();
+    return _firebaseApi.streamTradesMonthCollection(uID);
+  }
+
+  // Get ALL Trades As Stream
+  Stream<QuerySnapshot> fetchAllTradesasSteam() {
+    final _firebaseApi = FirebaseApi();
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final uID = AuthenticationService(_auth).getCurrentUID();
+    return _firebaseApi.streamAlltradesCollection(uID);
   }
 
   // Delete Trades
