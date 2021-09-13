@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/provider/news.dart';
@@ -6,9 +8,12 @@ import 'package:pipshub/screens/homepage.dart';
 import 'package:pipshub/screens/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pipshub/widgets/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,35 +35,92 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   AwesomeNotifications().createNotificationFromJsonData(message.data);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late StreamSubscription subscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    subscription =
+        Connectivity().onConnectivityChanged.listen(showConnectivitySnackBar);
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          Provider<AuthenticationService>(
-            create: (_) => AuthenticationService(FirebaseAuth.instance),
-          ),
-          StreamProvider(
-              create: (context) =>
-                  context.read<AuthenticationService>().authStateChanges,
-              initialData: null),
-          ChangeNotifierProvider(
-            create: (context) => Trades(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => NewsCrudModel(),
-          ),
-        ],
+      providers: [
+        Provider<AuthenticationService>(
+          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ),
+        StreamProvider(
+            create: (context) =>
+                context.read<AuthenticationService>().authStateChanges,
+            initialData: null),
+        ChangeNotifierProvider(
+          create: (context) => Trades(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => NewsCrudModel(),
+        ),
+      ],
+      child: OverlaySupport.global(
         child: MaterialApp(
           title: 'Pips Hub',
           debugShowCheckedModeBanner: false,
           home: AuthenticationWrapper(),
-        ));
+        ),
+      ),
+    );
+  }
+
+  void showConnectivitySnackBar(ConnectivityResult result) {
+    final hasInternet = result != ConnectivityResult.none;
+    final message = hasInternet
+        ? 'You have again ${result.toString()}'
+        : 'You have no internet';
+    final color = hasInternet ? Colors.green : Colors.red;
+
+    Utils.showTopSnackBar(context, message, color);
   }
 }
 
-class AuthenticationWrapper extends StatelessWidget {
+class AuthenticationWrapper extends StatefulWidget {
+  @override
+  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
+}
+
+class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
+  late StreamSubscription subscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    subscription =
+        Connectivity().onConnectivityChanged.listen(showConnectivitySnackBar);
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -79,5 +141,15 @@ class AuthenticationWrapper extends StatelessWidget {
         }
       },
     );
+  }
+
+  void showConnectivitySnackBar(ConnectivityResult result) {
+    final hasInternet = result != ConnectivityResult.none;
+    final message = hasInternet
+        ? 'You have again ${result.toString()}'
+        : 'You have no internet';
+    final color = hasInternet ? Colors.green : Colors.red;
+
+    Utils.showTopSnackBar(context, message, color);
   }
 }
