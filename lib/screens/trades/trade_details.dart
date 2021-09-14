@@ -30,6 +30,7 @@ class TradeDetails extends StatefulWidget {
 }
 
 class _TradeDetailsState extends State<TradeDetails> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
@@ -184,7 +185,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                         _showMyDialog();
                       },
                       child: Text(
-                        "DELETE",
+                        isLoading == true ? "DELETING" : "DELETE",
                         style: TextStyle(
                             fontSize: 20,
                             color: Colors.blue,
@@ -209,38 +210,48 @@ class _TradeDetailsState extends State<TradeDetails> {
         return AlertDialog(
           title: Text('Delete ${widget.pair.toUpperCase()}'),
           content: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Text('Are you sure you want to delete.'),
-                Text(
-                  widget.pair.toUpperCase(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
+            child: isLoading == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: <Widget>[
+                      Text('Are you sure you want to delete.'),
+                      Text(
+                        widget.pair.toUpperCase(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
           ),
           actions: <Widget>[
             TextButton(
               child: Text(
-                'Confirm',
+                isLoading == true ? "Deleting....." : 'Confirm',
                 style: TextStyle(fontSize: 18),
               ),
-              onPressed: () async {
-                final deleteTrade = Provider.of<Trades>(context, listen: false);
-                await deleteTrade.deleteTrade(widget.trade.id);
-                final snackBar = SnackBar(
-                  content: Text(
-                      'Trade ${widget.pair.toUpperCase()} Deleted Successfully!'),
-                );
+              onPressed: isLoading == true
+                  ? null
+                  : () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      final deleteTrade =
+                          Provider.of<Trades>(context, listen: false);
+                      await deleteTrade.deleteTrade(widget.trade.id);
+                      final snackBar = SnackBar(
+                        content: Text(
+                            'Trade ${widget.pair.toUpperCase()} Deleted Successfully!'),
+                      );
 
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
-              },
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
+                    },
             ),
             TextButton(
               child: Text('Cancel', style: TextStyle(fontSize: 18)),

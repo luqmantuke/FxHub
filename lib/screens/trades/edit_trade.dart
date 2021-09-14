@@ -27,6 +27,8 @@ class _EditTradeState extends State<EditTrade> {
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
+
   // String tradeResult = result;
 
   final List<Map<String, dynamic>> _results = [
@@ -131,8 +133,8 @@ class _EditTradeState extends State<EditTrade> {
                 controller: TextEditingController(text: widget.description),
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
-                minLines: 1,
-                maxLines: 10,
+                maxLines: 20,
+                minLines: 2,
               ),
               SizedBox(
                 height: 10,
@@ -147,35 +149,47 @@ class _EditTradeState extends State<EditTrade> {
                     ),
                   ),
                 ),
-                onPressed: () async {
-                  final editTrade = Provider.of<Trades>(context, listen: false);
-                  await editTrade.editTrade(
-                      widget.trade.id,
-                      TradeModel(
-                          pair: widget.pair,
-                          result: widget.result,
-                          description: widget.description,
-                          dateTime: DateTime.now()));
+                onPressed: isLoading == true
+                    ? null
+                    : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        final editTrade =
+                            Provider.of<Trades>(context, listen: false);
+                        await editTrade.editTrade(
+                            widget.trade.id,
+                            TradeModel(
+                                pair: widget.pair,
+                                result: widget.result,
+                                description: widget.description,
+                                dateTime: DateTime.now()));
 
-                  final snackBar = SnackBar(
-                    content: const Text('Trade Updated Successfully!'),
-                  );
+                        final snackBar = SnackBar(
+                          content: const Text('Trade Updated Successfully!'),
+                        );
 
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
-                },
-                child: Text(
-                  "Update",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
+                      },
+                child: isLoading == true
+                    ? Center(
+                        child: Text("UPDATING......",
+                            style: TextStyle(
+                              color: Colors.black,
+                            )))
+                    : Text(
+                        "Update",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
               ),
             ]),
           ),

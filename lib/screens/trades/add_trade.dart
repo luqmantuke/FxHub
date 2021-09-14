@@ -15,6 +15,7 @@ class _AddTradeState extends State<AddTrade> {
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
   String tradeResult = "profit";
+  bool isLoading = false;
 
   final List<Map<String, dynamic>> _results = [
     {
@@ -103,8 +104,8 @@ class _AddTradeState extends State<AddTrade> {
                 controller: descriptionController,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
-                minLines: 1,
-                maxLines: 10,
+                maxLines: 20,
+                minLines: 2,
               ),
               SizedBox(
                 height: 10,
@@ -119,38 +120,48 @@ class _AddTradeState extends State<AddTrade> {
                     ),
                   ),
                 ),
-                onPressed: () async {
-                  final addTrade = Provider.of<Trades>(context, listen: false);
-                  await addTrade.addTrade(TradeModel(
-                      pair: pairController.text,
-                      result: resultController.text,
-                      description: descriptionController.text,
-                      dateTime: DateTime.now()));
-                  final snackBar = SnackBar(
-                    content: const Text('Trade Added Successfully!'),
-                  );
+                onPressed: isLoading == true
+                    ? null
+                    : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        final addTrade =
+                            Provider.of<Trades>(context, listen: false);
+                        await addTrade.addTrade(TradeModel(
+                            pair: pairController.text,
+                            result: tradeResult,
+                            description: descriptionController.text,
+                            dateTime: DateTime.now()));
+                        final snackBar = SnackBar(
+                          content: const Text('Trade Added Successfully!'),
+                        );
 
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
-                },
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()));
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                child: isLoading == true
+                    ? Center(
+                        child: Text("UPLOADING......",
+                            style: TextStyle(
+                              color: Colors.black,
+                            )))
+                    : Text(
+                        "Submit",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
               ),
             ]),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-          Container(
-            child: Image.asset(
-              "assets/images/motivation.jpg",
-              fit: BoxFit.fill,
-            ),
-          )
         ],
       ),
     );
