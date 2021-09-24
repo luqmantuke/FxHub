@@ -159,7 +159,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => EditTrade(
@@ -245,7 +245,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => HomePage(),

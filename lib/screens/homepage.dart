@@ -1,11 +1,13 @@
 import 'package:pipshub/screens/course/course_list.dart';
 import 'package:pipshub/screens/news/news_list.dart';
 import 'package:pipshub/screens/trades/add_trade.dart';
+import 'package:pipshub/utils/contants.dart';
 
 import 'package:pipshub/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../config/pallete.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,20 +35,28 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           'PIPSHUB',
           style: TextStyle(
-            color: Palette.facebookColor,
+            color: facebookColor,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
         elevation: 0.0,
-        automaticallyImplyLeading: _selectedIndex == 0 ? false : true,
+        automaticallyImplyLeading: false,
       ),
+      // drawer: Drawer(
+      //   child: TextButton(
+      //     child: Text("Signout"),
+      //     onPressed: () {
+      //       context.read<AuthenticationService>().signOut();
+      //     },
+      //   ),
+      // ),
       body: _screenOptions.elementAt(_selectedIndex),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               child: Icon(Icons.add_circle_outline_rounded, size: 45),
               onPressed: () async {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddTrade(),
@@ -57,9 +67,9 @@ class _HomePageState extends State<HomePage> {
           : null,
       bottomNavigationBar: BottomNavigationBar(
         elevation: 0.5,
-        selectedItemColor: Palette.activeColor,
+        selectedItemColor: activeColor,
         selectedLabelStyle: TextStyle(
-          color: Palette.googleColor,
+          color: googleColor,
         ),
         unselectedItemColor: Colors.grey,
         items: [

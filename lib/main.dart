@@ -18,7 +18,6 @@ import 'package:overlay_support/overlay_support.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseApp firebaseApp = await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
@@ -144,11 +143,9 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   }
 
   void showConnectivitySnackBar(ConnectivityResult result) {
-    final hasInternet = result != ConnectivityResult.none;
-    final message = hasInternet
-        ? 'You have again ${result.toString()}'
-        : 'You have no internet';
-    final color = hasInternet ? Colors.green : Colors.red;
+    final hasNoInternet = result == ConnectivityResult.none;
+    final message = hasNoInternet ? 'You have no internet' : "Back Online";
+    final color = hasNoInternet ? Colors.red : Colors.green;
 
     Utils.showTopSnackBar(context, message, color);
   }

@@ -138,7 +138,7 @@ class _AddTradeState extends State<AddTrade> {
                         );
 
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => HomePage()));

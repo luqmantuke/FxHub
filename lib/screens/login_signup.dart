@@ -1,99 +1,245 @@
-import 'dart:ui';
-
-import 'package:pipshub/authentication/authentication.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../config/pallete.dart';
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/models/onboard_model.dart';
+import 'package:pipshub/utils/contants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 class LoginSignUpScreen extends StatefulWidget {
-  const LoginSignUpScreen({Key? key}) : super(key: key);
-
   @override
   _LoginSignUpScreenState createState() => _LoginSignUpScreenState();
 }
 
 class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
+  int currentIndex = 0;
+  bool isLoading = false;
+  bool enabled = true;
+  late PageController _pageController;
+  List<OnboardModel> screens = <OnboardModel>[
+    OnboardModel(
+      img: 'assets/images/pipshub.png',
+      text: "Welcome To PipsHub",
+      desc:
+          "PipsHub is an application that aids you in your forex journey. We provide TRADE tracking system, NEWS alert system with notification together with COURSES such as ICT,BTMM, PRICE ACTION, e.t.c.",
+      bg: Colors.white,
+      button: Color(0xFF4756DF),
+    ),
+    OnboardModel(
+      img: 'assets/images/add.jpg',
+      text: "How To Add Trades",
+      desc:
+          "Press the add button on your right and fill the form fields such as pair(GBP/USD), result(PROFIT), amount(10) e.t.c.",
+      bg: Colors.white,
+      button: Color(0xFF4756DF),
+    ),
+    OnboardModel(
+      img: 'assets/images/select.jpg',
+      text: "Select The Trade To View/Update/Delete",
+      desc:
+          "To view/update/delete your trade, select the pair you wish and you will be redirected the pair details page.",
+      bg: Colors.white,
+      button: Color(0xFF4756DF),
+    ),
+    OnboardModel(
+      img: 'assets/images/decide.jpg',
+      text: "Decide To Update/Delete Trade",
+      desc:
+          "if you wish to update/delete a trade, select the pair and at the details bottom page you select your option. Get Started Now With Your Google Account.",
+      bg: Colors.white,
+      button: Color(0xFF4756DF),
+    ),
+  ];
+
+  @override
+  void initState() {
+    _pageController = PageController(initialPage: 0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  _storeOnboardInfo() async {
+    print("Shared pref called");
+    int isViewed = 0;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('onBoard', isViewed);
+    print(prefs.getInt('onBoard'));
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(enabled);
     return Scaffold(
-      backgroundColor: Palette.backgroundColor,
-      body: SafeArea(
-        child: Container(
-            padding: EdgeInsets.only(top: 60, right: 20, left: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    width: MediaQuery.of(context).size.width,
-                    child: SvgPicture.asset(
-                      "assets/images/register.svg",
+      backgroundColor: kwhite,
+      appBar: AppBar(
+        backgroundColor: kwhite,
+        elevation: 0.0,
+      ),
+      body: AbsorbPointer(
+        absorbing: isLoading == true ? true : false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: PageView.builder(
+              itemCount: screens.length,
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              onPageChanged: (int index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              itemBuilder: (_, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                        height: MediaQuery.of(context).size.height / 2.8,
+                        child: Image.asset(screens[index].img)),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      child: ListView.builder(
+                        itemCount: screens.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 3.0),
+                                  width: currentIndex == index
+                                      ? MediaQuery.of(context).size.width * 0.05
+                                      : MediaQuery.of(context).size.width *
+                                          0.03,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.01,
+                                  decoration: BoxDecoration(
+                                    color: currentIndex == index
+                                        ? kbrown
+                                        : kbrown300,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                              ]);
+                        },
+                      ),
                     ),
-                  ),
-                  Text(
-                    "Welcome To PIPSHUB",
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Palette.activeColor,
-                      fontFamily: 'Kaushan',
+                    Text(
+                      screens[index].text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 27.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                        color: kblack,
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Center(
-                      child: Text(
-                        "Most of traders lose their money due to NEWS, NOT TRACKING THEIR TRADES AND KNOWLEDGE. \n In PIPSHUB, we solve such issues for you we provide \n Trade Tracking System, News Alert and Courses for different Strategies Such as ICT and BTMM \n Get Started below with your Google Account",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                    Text(
+                      screens[index].desc,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w500,
+                        color: kblack,
+                      ),
+                    ),
+                    index != 0 && isLoading == false
+                        ? InkWell(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30.0, vertical: 10),
+                              decoration: BoxDecoration(
+                                  color: backColor,
+                                  borderRadius: BorderRadius.circular(15.0)),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.arrow_back_sharp,
+                                        color: Colors.white),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.02,
+                                    ),
+                                    Text("Back",
+                                        style: TextStyle(color: Colors.white)),
+                                  ]),
+                            ),
+                            onTap: () {
+                              _pageController.previousPage(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.bounceIn,
+                              );
+                            },
+                          )
+                        : Text(""),
+                    AbsorbPointer(
+                      absorbing: !enabled,
+                      child: InkWell(
+                        onTap: () async {
+                          print(index);
+                          if (index == screens.length - 1) {
+                            setState(() {
+                              isLoading = true;
+                              enabled = false;
+                            });
+                            context
+                                .read<AuthenticationService>()
+                                .signInWithGoogle();
+                            await _storeOnboardInfo();
+                          }
+
+                          _pageController.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.bounceIn,
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: index == screens.length - 1
+                                  ? googleColor
+                                  : kblue,
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            isLoading == true
+                                ? Text(
+                                    "Signing In.....",
+                                    style: TextStyle(
+                                        fontSize: 16.0, color: kwhite),
+                                  )
+                                : Text(
+                                    index == screens.length - 1
+                                        ? "Continue With Google"
+                                        : "Next",
+                                    style: TextStyle(
+                                        fontSize: 16.0, color: kwhite),
+                                  ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.02,
+                            ),
+                            Icon(
+                              index == screens.length - 1
+                                  ? FontAwesomeIcons.google
+                                  : Icons.arrow_forward_sharp,
+                              color: kwhite,
+                            )
+                          ]),
                         ),
                       ),
                     ),
-
-                    // SizedBox(height: 3),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    child: Center(
-                      child: TextButtonMethod(FontAwesomeIcons.googlePlus,
-                          "Google", Palette.googleColor),
-                    ),
-                  ),
-                ],
-              ),
-            )),
-      ),
-    );
-  }
-
-  // ignore: non_constant_identifier_names
-  TextButton TextButtonMethod(
-    IconData icon,
-    String text,
-    Color backgroundColor,
-  ) {
-    return TextButton(
-      onPressed: () {
-        context.read<AuthenticationService>().signInWithGoogle();
-      },
-      style: TextButton.styleFrom(
-        side: BorderSide(width: 1, color: Colors.grey),
-        // minimumSize: Size(155, 40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+                  ],
+                );
+              }),
         ),
-        primary: Colors.white,
-        backgroundColor: backgroundColor,
-      ),
-      child: Row(
-        children: [Icon(icon), SizedBox(width: 20), Text(text)],
       ),
     );
   }
