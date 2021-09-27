@@ -21,6 +21,6 @@ class TradeModel {
         'pair': pair,
         'result': result,
         'description': description,
-        'dateTime': DateTime.now()
+        'dateTime': dateTime,
       };
 }

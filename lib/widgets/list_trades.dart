@@ -200,6 +200,7 @@ class _ListTradesState extends State<ListTrades> {
                                         result: docSnapshot.result,
                                         description: docSnapshot.description,
                                         day: myDateTime.day.toString(),
+                                        dateTime: myDateTime.toString(),
                                         month: myDateTime.month.toString(),
                                         year: myDateTime.year.toString(),
                                         trade: tradeSnapshot,

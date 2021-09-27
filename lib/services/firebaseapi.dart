@@ -89,8 +89,9 @@ class FirebaseApi {
   // STREAM WEEK TRADE METHOD
   Stream<QuerySnapshot> streamTradesWeekCollection(String uID) {
     DateTime _now = DateTime.now();
-    DateTime _start = DateTime(_now.year, _now.month, _now.day - 1, 0, 0);
-    DateTime _end = DateTime(_now.year, _now.month, _now.day + 7, 23, 59, 59);
+
+    DateTime _start = DateTime(_now.year, _now.month, _now.day - 7, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day - 7, 23, 59, 59);
     return _db
         .collection("userData")
         .doc(uID)
@@ -104,8 +105,8 @@ class FirebaseApi {
   // STREAM MONTH TRADE METHOD
   Stream<QuerySnapshot> streamTradesMonthCollection(String uID) {
     DateTime _now = DateTime.now();
-    DateTime _start = DateTime(_now.year, _now.month, _now.day - 1, 0, 0);
-    DateTime _end = DateTime(_now.year, _now.month, _now.day + 30, 23, 59, 59);
+    DateTime _start = DateTime(_now.year, _now.month, _now.day - 31, 0, 0);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day - 31, 23, 59, 59);
     return _db
         .collection("userData")
         .doc(uID)

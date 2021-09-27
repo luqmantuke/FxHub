@@ -10,6 +10,7 @@ class TradeDetails extends StatefulWidget {
   String pair;
   String result;
   String description;
+  String dateTime;
   String day;
   String month;
   String year;
@@ -21,6 +22,7 @@ class TradeDetails extends StatefulWidget {
     required this.month,
     required this.year,
     required this.description,
+    required this.dateTime,
     required this.result,
     required this.id,
     required this.trade,
@@ -166,6 +168,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                               pair: widget.pair,
                               result: widget.result,
                               description: widget.description,
+                              dateTime: widget.dateTime,
                               trade: widget.trade),
                         ),
                       );
