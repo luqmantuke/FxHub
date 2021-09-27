@@ -1,22 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 
 // ignore: must_be_immutable
 class EditTrade extends StatefulWidget {
   String pair;
   String result;
   String description;
+  String dateTime;
   QueryDocumentSnapshot<Object?> trade;
 
   EditTrade(
       {required this.pair,
       required this.result,
       required this.description,
+      required this.dateTime,
       required this.trade});
   @override
   _EditTradeState createState() => _EditTradeState();
@@ -136,6 +140,34 @@ class _EditTradeState extends State<EditTrade> {
                 maxLines: 20,
                 minLines: 2,
               ),
+              DateTimePicker(
+                type: DateTimePickerType.dateTimeSeparate,
+                dateMask: 'd MMM, yyyy',
+                initialValue: widget.dateTime,
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                icon: Icon(Icons.event),
+                dateLabelText: 'Date',
+                use24HourFormat: true,
+                timeLabelText: "Hour",
+                // selectableDayPredicate: (date) {
+                //   // Disable weekend days to select from the calendar
+                //   if (date.weekday == 6 || date.weekday == 7) {
+                //     return false;
+                //   }
+
+                //   return true;
+                // },
+                onChanged: (val) => setState(() => widget.dateTime = val),
+                validator: (val) {
+                  return null;
+                },
+                onSaved: (val) {
+                  setState(() {
+                    widget.dateTime = val ?? '';
+                  });
+                },
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -163,7 +195,8 @@ class _EditTradeState extends State<EditTrade> {
                                 pair: widget.pair,
                                 result: widget.result,
                                 description: widget.description,
-                                dateTime: DateTime.now()));
+                                dateTime: DateFormat("yyyy-MM-dd hh:mm")
+                                    .parse(widget.dateTime)));
 
                         final snackBar = SnackBar(
                           content: const Text('Trade Updated Successfully!'),

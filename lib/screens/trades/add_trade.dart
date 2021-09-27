@@ -1,9 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 
 class AddTrade extends StatefulWidget {
   @override
@@ -16,6 +18,9 @@ class _AddTradeState extends State<AddTrade> {
   final descriptionController = TextEditingController();
   String tradeResult = "profit";
   bool isLoading = false;
+  DateTime nowDate =
+      DateFormat("yyyy-MM-dd hh:mm").parse(DateTime.now().toString());
+  String dateTime = '';
 
   final List<Map<String, dynamic>> _results = [
     {
@@ -107,6 +112,26 @@ class _AddTradeState extends State<AddTrade> {
                 maxLines: 20,
                 minLines: 2,
               ),
+              DateTimePicker(
+                type: DateTimePickerType.dateTimeSeparate,
+                dateMask: 'd MMM, yyyy',
+                initialValue: DateTime.now().toString(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                icon: Icon(Icons.event),
+                dateLabelText: 'Date',
+                use24HourFormat: true,
+                timeLabelText: "Hour",
+                onChanged: (val) => setState(() => dateTime = val),
+                validator: (val) {
+                  return null;
+                },
+                onSaved: (val) {
+                  setState(() {
+                    dateTime = val ?? '';
+                  });
+                },
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -132,7 +157,10 @@ class _AddTradeState extends State<AddTrade> {
                             pair: pairController.text,
                             result: tradeResult,
                             description: descriptionController.text,
-                            dateTime: DateTime.now()));
+                            dateTime: dateTime == ''
+                                ? DateTime.now()
+                                : DateFormat("yyyy-MM-dd hh:mm")
+                                    .parse(dateTime)));
                         final snackBar = SnackBar(
                           content: const Text('Trade Added Successfully!'),
                         );
