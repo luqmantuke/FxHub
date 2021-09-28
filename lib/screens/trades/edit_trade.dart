@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
@@ -14,6 +15,7 @@ class EditTrade extends StatefulWidget {
   String result;
   String description;
   String dateTime;
+  int amount;
   QueryDocumentSnapshot<Object?> trade;
 
   EditTrade(
@@ -21,6 +23,7 @@ class EditTrade extends StatefulWidget {
       required this.result,
       required this.description,
       required this.dateTime,
+      required this.amount,
       required this.trade});
   @override
   _EditTradeState createState() => _EditTradeState();
@@ -30,6 +33,7 @@ class _EditTradeState extends State<EditTrade> {
   final pairController = TextEditingController();
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
+  final amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
@@ -56,6 +60,7 @@ class _EditTradeState extends State<EditTrade> {
     pairController.text = widget.pair;
     resultController.text = widget.result;
     descriptionController.text = widget.description;
+    amountController.text = widget.amount.toString();
     return super.initState();
   }
 
@@ -123,6 +128,21 @@ class _EditTradeState extends State<EditTrade> {
                     setState(() {
                       widget.result = value;
                     });
+                },
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    hintText: widget.amount.toString(),
+                    hintStyle:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    labelText: "Amount Made/Lost",
+                    labelStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                controller:
+                    TextEditingController(text: widget.amount.toString()),
+                onChanged: (value) {
+                  widget.amount = int.parse(value);
                 },
               ),
               TextField(
@@ -195,6 +215,7 @@ class _EditTradeState extends State<EditTrade> {
                                 pair: widget.pair,
                                 result: widget.result,
                                 description: widget.description,
+                                amount: widget.amount,
                                 dateTime: DateFormat("yyyy-MM-dd hh:mm")
                                     .parse(widget.dateTime)));
 

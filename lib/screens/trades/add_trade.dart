@@ -16,6 +16,7 @@ class _AddTradeState extends State<AddTrade> {
   final pairController = TextEditingController();
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
+  final amountController = TextEditingController();
   String tradeResult = "profit";
   bool isLoading = false;
   DateTime nowDate =
@@ -93,12 +94,25 @@ class _AddTradeState extends State<AddTrade> {
                     tradeResult = val;
                   });
                 },
+
                 onSaved: (value) {
                   if (value == null) {
                   } else
                     setState(() {
                       tradeResult = value;
                     });
+                },
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    labelText: "Amount Made/Lost Example 10",
+                    labelStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                controller: amountController,
+                onChanged: (value) {
+                  amountController.value = TextEditingValue(
+                      text: value, selection: amountController.selection);
                 },
               ),
               TextField(
@@ -157,6 +171,7 @@ class _AddTradeState extends State<AddTrade> {
                             pair: pairController.text,
                             result: tradeResult,
                             description: descriptionController.text,
+                            amount: int.parse(amountController.text),
                             dateTime: dateTime == ''
                                 ? DateTime.now()
                                 : DateFormat("yyyy-MM-dd hh:mm")

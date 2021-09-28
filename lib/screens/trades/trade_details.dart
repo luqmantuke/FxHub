@@ -15,6 +15,7 @@ class TradeDetails extends StatefulWidget {
   String month;
   String year;
   String id;
+  int amount;
   QueryDocumentSnapshot<Object?> trade;
   TradeDetails({
     required this.pair,
@@ -25,6 +26,7 @@ class TradeDetails extends StatefulWidget {
     required this.dateTime,
     required this.result,
     required this.id,
+    required this.amount,
     required this.trade,
   });
   @override
@@ -84,6 +86,49 @@ class _TradeDetailsState extends State<TradeDetails> {
                   Text(
                     widget.result,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Amount USD: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      text: widget.result == 'profit' ? 'USD  +' : 'USD  -',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          fontSize: 16),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: widget.amount.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: widget.result == 'profit'
+                                ? Colors.blue
+                                : Colors.red,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 15,
@@ -169,6 +214,7 @@ class _TradeDetailsState extends State<TradeDetails> {
                               result: widget.result,
                               description: widget.description,
                               dateTime: widget.dateTime,
+                              amount: widget.amount,
                               trade: widget.trade),
                         ),
                       );

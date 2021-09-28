@@ -190,7 +190,37 @@ class _ListTradesState extends State<ListTrades> {
                                             fontWeight: FontWeight.w600)),
                                   ],
                                 ),
-                                // trailing: Icon(Icons.more_vert),
+                                // trailing: Text(docSnapshot.amount.toString(),
+                                //     style: TextStyle(
+                                //       fontSize: 17,
+                                //       color: docSnapshot.result == 'profit'
+                                //           ? Colors.blue
+                                //           : Colors.red,
+                                //       fontWeight: FontWeight.bold,
+                                //     )),
+                                trailing: RichText(
+                                  text: TextSpan(
+                                    text: docSnapshot.result == 'profit'
+                                        ? 'USD  +'
+                                        : 'USD  -',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black,
+                                        fontSize: 16),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: docSnapshot.amount.toString(),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: docSnapshot.result == 'profit'
+                                              ? Colors.blue
+                                              : Colors.red,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 onTap: () async {
                                   await Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -199,6 +229,7 @@ class _ListTradesState extends State<ListTrades> {
                                         id: 'trades.trades[index].id.toString()',
                                         result: docSnapshot.result,
                                         description: docSnapshot.description,
+                                        amount: docSnapshot.amount,
                                         day: myDateTime.day.toString(),
                                         dateTime: myDateTime.toString(),
                                         month: myDateTime.month.toString(),
