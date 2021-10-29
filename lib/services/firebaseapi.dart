@@ -3,6 +3,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirebaseApi {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // STREAM Course List METHOD
+  Stream<QuerySnapshot> streamCourseListCollection() {
+    return _db
+        .collection('course')
+        .orderBy("courseName", descending: false)
+        .snapshots();
+  }
+
+  // STREAM Course Videos METHOD
+  Stream<QuerySnapshot> streamCourseVideosCollection() {
+    return _db.collection('course').doc().collection("videos").snapshots();
+  }
+
   // STREAM TRADENEWS METHOD
   Stream<QuerySnapshot> streamtradeNewsTodayCollection() {
     DateTime _now = DateTime.now();

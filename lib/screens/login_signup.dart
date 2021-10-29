@@ -64,16 +64,13 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
   }
 
   _storeOnboardInfo() async {
-    print("Shared pref called");
     int isViewed = 0;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('onBoard', isViewed);
-    print(prefs.getInt('onBoard'));
   }
 
   @override
   Widget build(BuildContext context) {
-    print(enabled);
     return Scaffold(
       backgroundColor: kwhite,
       appBar: AppBar(
@@ -184,7 +181,6 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                       absorbing: !enabled,
                       child: InkWell(
                         onTap: () async {
-                          print(index);
                           if (index == screens.length - 1) {
                             setState(() {
                               isLoading = true;

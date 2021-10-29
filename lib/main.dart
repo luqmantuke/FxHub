@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/pushNotification.dart';
+import 'package:pipshub/provider/course.dart';
 import 'package:pipshub/provider/news.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
@@ -16,9 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
-}
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,12 +52,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print(
-            'Message title: ${message.notification?.title}, body: ${message.notification?.body}, data: ${message.data}');
-
         // Parse the message received
         PushNotification notification = PushNotification(
           title: message.notification?.title,
@@ -83,9 +77,7 @@ class _MyAppState extends State<MyApp> {
           );
         }
       });
-    } else {
-      print('User declined or has not accepted permission');
-    }
+    } else {}
   }
 
   // For handling notification when the app is in terminated state
@@ -156,6 +148,9 @@ class _MyAppState extends State<MyApp> {
             initialData: null),
         ChangeNotifierProvider(
           create: (context) => Trades(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CourseFirestoreModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => NewsCrudModel(),

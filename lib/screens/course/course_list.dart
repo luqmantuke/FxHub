@@ -1,5 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pipshub/models/course_model.dart';
+import 'package:pipshub/provider/course.dart';
+import 'package:pipshub/screens/course/course_details.dart';
+import 'package:provider/provider.dart';
+
+final List<String> imgList = [
+  'https://firebasestorage.googleapis.com/v0/b/fluttertodo-35aa8.appspot.com/o/assets%2FcourseSlider%2Ffd0fef8d620143c0147ca41763c0b596.png?alt=media&token=f1bf8861-9992-43dd-b797-302344efffd7',
+  'https://firebasestorage.googleapis.com/v0/b/fluttertodo-35aa8.appspot.com/o/assets%2FcourseSlider%2Fforex-courses.jpg?alt=media&token=fb78e2c1-87c6-44a4-b606-477a35db1cf1',
+  'https://firebasestorage.googleapis.com/v0/b/fluttertodo-35aa8.appspot.com/o/assets%2FcourseSlider%2F800_5fc6036eae37a.png?alt=media&token=8c010ae7-95e5-443d-99f5-965c51376d8b',
+  'https://firebasestorage.googleapis.com/v0/b/fluttertodo-35aa8.appspot.com/o/assets%2FcourseSlider%2FPriceActionBannerv2.png?alt=media&token=63004f65-566d-47e5-b1fb-2d0a6875ec46',
+  'https://firebasestorage.googleapis.com/v0/b/fluttertodo-35aa8.appspot.com/o/assets%2FcourseSlider%2Fmaxresdefault.jpg?alt=media&token=3e083496-0c4b-4f55-a096-01cb611b5080',
+];
 
 class CourseList extends StatefulWidget {
   const CourseList({Key? key}) : super(key: key);
@@ -9,145 +23,130 @@ class CourseList extends StatefulWidget {
 }
 
 class _CourseListState extends State<CourseList> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height / 3,
-                width: MediaQuery.of(context).size.width,
-                child: Image.asset(
-                  "assets/images/course_background.jpg",
-                  fit: BoxFit.fill,
-                ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  "Learn Forex Best Strategies",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: 3),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(left: 20),
-                child: RichText(
-                  text: TextSpan(
-                    text: ' ',
-                    style: DefaultTextStyle.of(context).style,
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'ICT,BTMM,WYCKOFF,PRICE ACTION ',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.lightBlueAccent.shade400,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '  For Free',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+  final List<Widget> imageSliders = imgList
+      .map((item) => Container(
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                      Positioned(
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(200, 0, 0, 0),
+                                Color.fromARGB(0, 0, 0, 0)
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                          child: Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-
-              Container(
-                height: MediaQuery.of(context).size.height / 3,
-                width: MediaQuery.of(context).size.width,
-                child: SvgPicture.asset(
-                  "assets/images/coming-soon.svg",
-                ),
-              ),
-              // GridView.builder(
-              //   physics: ScrollPhysics(),
-              //   shrinkWrap: true,
-              //   padding: EdgeInsets.symmetric(horizontal: 4),
-              //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //     childAspectRatio: 9 / 10,
-              //     crossAxisCount: 2,
-              //   ),
-              //   itemCount: 6,
-              //   itemBuilder: (context, index) {
-              //     return Container(
-              //       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(15),
-              //         color: Colors.lightBlueAccent.withOpacity(1),
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           Container(
-              //             decoration: BoxDecoration(
-              //               borderRadius: BorderRadius.circular(15),
-              //             ),
-              //             margin: EdgeInsetsDirectional.only(
-              //               bottom: 8,
-              //             ),
-              //             height: MediaQuery.of(context).size.width * 0.4,
-              //             child: CachedNetworkImage(
-              //               height: double.maxFinite,
-              //               fit: BoxFit.fill,
-              //               imageUrl:
-              //                   "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-              //               placeholder: (context, url) =>
-              //                   CircularProgressIndicator(),
-              //               errorWidget: (context, url, error) =>
-              //                   Icon(Icons.error),
-              //             ),
-              //           ),
-              //           Text(
-              //             'ICT COURSE',
-              //             style: TextStyle(
-              //               fontSize: 16,
-              //               fontWeight: FontWeight.bold,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              // )
-              // Container(
-              //   width: MediaQuery.of(context).size.width,
-              //   padding: EdgeInsets.only(left: 20),
-              //   child:
-              //       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              //     Container(
-              //       width: 250,
-              //       height: 200,
-              //       color: Colors.green,
-              //     ),
-              //     Text(
-              //       "INNER CIRCLE TRADER FULL COURSE",
-              //       softWrap: true,
-              //       style: TextStyle(
-              //         fontSize: 17,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   ]),
-              // ),
-            ],
-          ),
-        ),
+                  )),
+            ),
+          ))
+      .toList();
+  @override
+  Widget build(BuildContext context) {
+    final courseProvider = Provider.of<CourseFirestoreModel>(context);
+    return Scaffold(
+      body: Column(
+        children: [
+          Container(
+              child: CarouselSlider(
+            options: CarouselOptions(
+              aspectRatio: 2.0,
+              enlargeCenterPage: false,
+              scrollDirection: Axis.horizontal,
+              autoPlay: true,
+            ),
+            items: imageSliders,
+          )),
+          Container(
+              padding: EdgeInsets.only(top: 15, right: 10, left: 10),
+              height: MediaQuery.of(context).size.height / 1.8,
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: courseProvider.fetchCourses(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final course = snapshot.data!.docs
+                          .map((course) => CourseModel.fromMap(
+                              course.data() as Map<String, dynamic>))
+                          .toList();
+                      if (snapshot.data!.size == 0) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/images/oops.svg",
+                                height: MediaQuery.of(context).size.height / 4,
+                              ),
+                              SizedBox(height: 17),
+                              Text(
+                                "Sorry No Courses Right Now!!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                          itemCount: course.length,
+                          itemBuilder: (context, index) {
+                            final docSnapshot = course[index];
+                            final courseSnapshot = snapshot.data!.docs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => CourseDetails(
+                                          courseName: docSnapshot.courseName,
+                                          courseDetails:
+                                              docSnapshot.courseDetails,
+                                          courseImage: docSnapshot.courseImage,
+                                          courseId: courseSnapshot.id,
+                                          hasPdf: docSnapshot.hasPdf,
+                                          hasVideo: docSnapshot.hasVideo,
+                                        )));
+                              },
+                              child: Card(
+                                child: ListTile(
+                                  trailing: Icon(Icons.arrow_right_alt_sharp,
+                                      size: 35),
+                                  title: Text(docSnapshot.courseName,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17)),
+                                ),
+                              ),
+                            );
+                          });
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }))
+        ],
       ),
-    ));
+    );
   }
 }
