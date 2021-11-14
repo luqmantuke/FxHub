@@ -1,5 +1,5 @@
 name: pipshub
-description: A new Flutter project.
+description: An app for forex traders that help them achieve more consistency in their trades. It offers trade tracking system, news and courses.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.2+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -45,6 +45,8 @@ dependencies:
   overlay_support: ^1.2.1
   date_time_picker: ^2.1.0
   carousel_slider: ^4.0.0
+  flutter_inappwebview: ^5.3.2
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

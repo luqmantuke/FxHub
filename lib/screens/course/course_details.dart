@@ -51,7 +51,7 @@ class _CourseDetailsState extends State<CourseDetails> {
                       height: MediaQuery.of(context).size.height / 3,
                       imageUrl: widget.courseImage,
                       placeholder: (context, url) =>
-                          CircularProgressIndicator(),
+                          CircularProgressIndicator(strokeWidth: 1.0),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),

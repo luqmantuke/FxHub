@@ -12,8 +12,12 @@ class FirebaseApi {
   }
 
   // STREAM Course Videos METHOD
-  Stream<QuerySnapshot> streamCourseVideosCollection() {
-    return _db.collection('course').doc().collection("videos").snapshots();
+  Stream<QuerySnapshot> streamCourseVideosCollection(documentId) {
+    return _db
+        .collection('course')
+        .doc(documentId)
+        .collection("videos")
+        .snapshots();
   }
 
   // STREAM TRADENEWS METHOD
@@ -104,7 +108,7 @@ class FirebaseApi {
     DateTime _now = DateTime.now();
 
     DateTime _start = DateTime(_now.year, _now.month, _now.day - 7, 0, 0);
-    DateTime _end = DateTime(_now.year, _now.month, _now.day - 7, 23, 59, 59);
+    DateTime _end = DateTime(_now.year, _now.month, _now.day - 2, 23, 59, 59);
     return _db
         .collection("userData")
         .doc(uID)
@@ -118,8 +122,15 @@ class FirebaseApi {
   // STREAM MONTH TRADE METHOD
   Stream<QuerySnapshot> streamTradesMonthCollection(String uID) {
     DateTime _now = DateTime.now();
-    DateTime _start = DateTime(_now.year, _now.month, _now.day - 31, 0, 0);
-    DateTime _end = DateTime(_now.year, _now.month, _now.day - 31, 23, 59, 59);
+    DateTime _start = DateTime(_now.year, _now.month - 1, _now.day - 1);
+    DateTime _end = DateTime(
+      _now.year,
+      _now.month,
+    );
+    // DateTime _end = DateTime(
+    //   _now.year,
+    //   _now.month - 1,
+    // );
     return _db
         .collection("userData")
         .doc(uID)

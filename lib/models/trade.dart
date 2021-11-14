@@ -16,7 +16,7 @@ class TradeModel {
         pair: map['pair'] ?? '',
         result: map['result'] ?? '',
         description: map['description'] ?? '',
-        amount: map['amount'] ?? '',
+        amount: map['amount'] ?? 0,
         dateTime: map['dateTime'].toDate() ?? '');
   }
   Map<String, dynamic> toJson() => {

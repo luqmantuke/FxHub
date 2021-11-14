@@ -7,4 +7,8 @@ class CourseFirestoreModel extends ChangeNotifier {
   Stream<QuerySnapshot> fetchCourses() {
     return _firebaseApi.streamCourseListCollection();
   }
+
+  Stream<QuerySnapshot> fetchCourseVideos(documentId) {
+    return _firebaseApi.streamCourseVideosCollection(documentId);
+  }
 }

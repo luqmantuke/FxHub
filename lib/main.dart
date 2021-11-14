@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/pushNotification.dart';
 import 'package:pipshub/provider/course.dart';
@@ -22,6 +24,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  if (Platform.isAndroid) {
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
 
   runApp(MyApp());
 }
