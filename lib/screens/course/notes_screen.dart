@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pipshub/screens/course/notes_details.dart';
+import 'package:pipshub/ad_helper.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+const int maxFailedLoadAttempts = 3;
 
 class NotesScreen extends StatefulWidget {
   final String courseId;
@@ -12,9 +16,60 @@ class NotesScreen extends StatefulWidget {
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  bool isLoading = false;
+  int _interstitialLoadAttempts = 0;
+  InterstitialAd? _interstitialAd;
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+          _interstitialLoadAttempts = 0;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialLoadAttempts += 1;
+          _interstitialAd = null;
+          if (_interstitialLoadAttempts <= maxFailedLoadAttempts) {
+            _createInterstitialAd();
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _interstitialAd?.dispose();
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isLoading = false;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent.withOpacity(1),
@@ -43,6 +98,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                   onTap: isLoading == true
                                       ? null
                                       : () async {
+                                          _showInterstitialAd();
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>

@@ -10,7 +10,7 @@ import 'package:pipshub/provider/course.dart';
 import 'package:pipshub/provider/news.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
-import 'package:pipshub/screens/login_signup.dart';
+import 'package:pipshub/screens/authentication/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:pipshub/widgets/notification_budge.dart';
@@ -18,16 +18,17 @@ import 'package:pipshub/widgets/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  MobileAds.instance.initialize();
   if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
-
   runApp(MyApp());
 }
 

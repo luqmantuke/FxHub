@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:pipshub/ad_helper.dart';
 import 'package:pipshub/screens/course/notes_screen.dart';
 import 'package:pipshub/screens/course/videos_screen.dart';
 
@@ -25,6 +27,39 @@ class CourseDetails extends StatefulWidget {
 }
 
 class _CourseDetailsState extends State<CourseDetails> {
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createBottomBannerAd();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bottomBannerAd.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -68,6 +103,13 @@ class _CourseDetailsState extends State<CourseDetails> {
                     height: size.height / 15,
                     width: size.width / 1.1,
                   ),
+                  _isBottomBannerAdLoaded
+                      ? Container(
+                          height: _bottomBannerAd.size.height.toDouble(),
+                          width: _bottomBannerAd.size.width.toDouble(),
+                          child: AdWidget(ad: _bottomBannerAd),
+                        )
+                      : Container(),
                   Container(
                     child: Text(widget.courseDetails,
                         style: TextStyle(

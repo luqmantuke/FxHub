@@ -1,3 +1,5 @@
+import 'package:pipshub/authentication/authentication.dart';
+import 'package:pipshub/screens/authentication/login_signup.dart';
 import 'package:pipshub/screens/course/course_list.dart';
 import 'package:pipshub/screens/news/news_list.dart';
 import 'package:pipshub/screens/trades/add_trade.dart';
@@ -6,6 +8,8 @@ import 'package:pipshub/utils/contants.dart';
 import 'package:pipshub/widgets/list_trades.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// ignore: implementation_imports
+import 'package:provider/src/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -39,16 +43,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         elevation: 0.0,
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
       ),
-      // drawer: Drawer(
-      //   child: TextButton(
-      //     child: Text("Signout"),
-      //     onPressed: () {
-      //       context.read<AuthenticationService>().signOut();
-      //     },
-      //   ),
-      // ),
+      drawer: Drawer(
+        child: TextButton(
+          child: Text("Signout"),
+          onPressed: () async {
+            await context.read<AuthenticationService>().signOut();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => LoginSignUpScreen()));
+          },
+        ),
+      ),
       body: _screenOptions.elementAt(_selectedIndex),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(

@@ -1,4 +1,6 @@
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:pipshub/ad_helper.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/homepage.dart';
@@ -6,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+
+const int maxFailedLoadAttempts = 3;
 
 class AddTrade extends StatefulWidget {
   @override
@@ -17,11 +21,35 @@ class _AddTradeState extends State<AddTrade> {
   final resultController = TextEditingController();
   final descriptionController = TextEditingController();
   final amountController = TextEditingController();
+  bool _validate = false;
+
   String tradeResult = "profit";
   bool isLoading = false;
   DateTime nowDate =
       DateFormat("yyyy-MM-dd hh:mm").parse(DateTime.now().toString());
   String dateTime = '';
+  int _interstitialLoadAttempts = 0;
+  InterstitialAd? _interstitialAd;
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (InterstitialAd ad) {
+          _interstitialAd = ad;
+          _interstitialLoadAttempts = 0;
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialLoadAttempts += 1;
+          _interstitialAd = null;
+          if (_interstitialLoadAttempts <= maxFailedLoadAttempts) {
+            _createInterstitialAd();
+          }
+        },
+      ),
+    );
+  }
 
   final List<Map<String, dynamic>> _results = [
     {
@@ -37,6 +65,35 @@ class _AddTradeState extends State<AddTrade> {
       'textStyle': TextStyle(color: Colors.red, fontSize: 18)
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _createInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    amountController.dispose();
+    _interstitialAd?.dispose();
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +144,7 @@ class _AddTradeState extends State<AddTrade> {
                 initialValue: 'profit',
                 // icon: Icon(Icons.money),
                 labelText: 'Results',
+
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 items: _results,
                 onChanged: (val) {
@@ -106,6 +164,7 @@ class _AddTradeState extends State<AddTrade> {
               TextField(
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
+                    errorText: _validate ? 'Value Can\'t Be Empty' : null,
                     labelText: "Amount Made/Lost Example 10",
                     labelStyle:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -163,31 +222,40 @@ class _AddTradeState extends State<AddTrade> {
                     ? null
                     : () async {
                         setState(() {
-                          isLoading = true;
+                          amountController.text.isEmpty
+                              ? _validate = true
+                              : _validate = false;
                         });
                         final addTrade =
                             Provider.of<Trades>(context, listen: false);
-                        await addTrade.addTrade(TradeModel(
-                            pair: pairController.text,
-                            result: tradeResult,
-                            description: descriptionController.text,
-                            amount: int.parse(amountController.text),
-                            dateTime: dateTime == ''
-                                ? DateTime.now()
-                                : DateFormat("yyyy-MM-dd hh:mm")
-                                    .parse(dateTime)));
-                        final snackBar = SnackBar(
-                          content: const Text('Trade Added Successfully!'),
-                        );
 
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                        setState(() {
-                          isLoading = false;
-                        });
+                        if (_validate == false) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await addTrade.addTrade(TradeModel(
+                              pair: pairController.text,
+                              result: tradeResult,
+                              description: descriptionController.text,
+                              amount: int.parse(amountController.text),
+                              dateTime: dateTime == ''
+                                  ? DateTime.now()
+                                  : DateFormat("yyyy-MM-dd hh:mm")
+                                      .parse(dateTime)));
+                          final snackBar = SnackBar(
+                            content: const Text('Trade Added Successfully!'),
+                          );
+                          _showInterstitialAd();
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                          setState(() {
+                            isLoading = false;
+                          });
+                        } else {}
                       },
                 child: isLoading == true
                     ? Center(

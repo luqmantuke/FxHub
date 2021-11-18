@@ -67,43 +67,110 @@ class _NewsListState extends State<NewsList> {
     }
 
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-          stream: streamFilter(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final news = snapshot.data!.docs
-                  .map((news) =>
-                      NewsModel.fromMap(news.data() as Map<String, dynamic>))
-                  .toList();
-              if (snapshot.data!.size == 0) {
-                return Center(
+      body: SingleChildScrollView(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: streamFilter(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final news = snapshot.data!.docs
+                    .map((news) =>
+                        NewsModel.fromMap(news.data() as Map<String, dynamic>))
+                    .toList();
+                if (snapshot.data!.size == 0) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/images/oops.svg",
+                          height: MediaQuery.of(context).size.height / 4,
+                        ),
+                        SizedBox(height: 17),
+                        Text(
+                          "You've no Sensitive news for $oopsNews.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 17),
+
+                        // ROW WITH LIST OF DATEFILTERS
+                        Container(
+                          padding: EdgeInsets.only(left: 15, right: 10),
+                          height: orientation == Orientation.portrait
+                              ? MediaQuery.of(context).size.height / 30
+                              : MediaQuery.of(context).size.height / 25,
+                          width: orientation == Orientation.portrait
+                              ? MediaQuery.of(context).size.width
+                              : MediaQuery.of(context).size.width / 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                child: dateFilter("YESTERDAY"),
+                                onTap: () {
+                                  setState(() {
+                                    newsDateFilter = 'yesterday';
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: dateFilter("TODAY"),
+                                onTap: () {
+                                  setState(() {
+                                    newsDateFilter = 'today';
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: dateFilter("TOMORROW"),
+                                onTap: () {
+                                  setState(() {
+                                    newsDateFilter = 'tomorrow';
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: dateFilter("THIS WEEK"),
+                                onTap: () {
+                                  setState(() {
+                                    newsDateFilter = 'week';
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container(
+                  padding: EdgeInsets.only(top: 5, right: 15, left: 15),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SvgPicture.asset(
-                        "assets/images/oops.svg",
-                        height: MediaQuery.of(context).size.height / 4,
+                      // CONTAINER 1(NEWS HEADER)
+                      Container(
+                        child: Center(
+                          child: Text(
+                            '',
+                            style: TextStyle(
+                              fontSize: 23,
+                              // fontWeight: FontWeight.bold,
+                              fontFamily: 'Kaushan',
+                            ),
+                          ),
+                        ),
                       ),
-                      SizedBox(height: 17),
-                      Text(
-                        "You've no Sensitive news for $oopsNews.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(height: 17),
 
                       // ROW WITH LIST OF DATEFILTERS
                       Container(
-                        padding: EdgeInsets.only(left: 15, right: 10),
                         height: orientation == Orientation.portrait
                             ? MediaQuery.of(context).size.height / 30
                             : MediaQuery.of(context).size.height / 20,
-                        width: orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.width
-                            : MediaQuery.of(context).size.width / 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             GestureDetector(
                               child: dateFilter("YESTERDAY"),
@@ -140,218 +207,157 @@ class _NewsListState extends State<NewsList> {
                           ],
                         ),
                       ),
+
+                      SizedBox(height: 20),
+                      // CONTAINER SHOWING TODAY'S DATE
+
+                      Container(
+                        height: orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 30
+                            : MediaQuery.of(context).size.height / 17,
+                        color: Colors.green.shade50,
+                        child: Center(
+                          child: date(),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      // CONTAINER SHOWING LIST OF CALENDARS IN FORM OF LISTTILE
+                      Container(
+                        height: orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 1.6
+                            : MediaQuery.of(context).size.height / 2.7,
+                        child: Card(
+                            child: ListView.builder(
+                                itemCount: news.length,
+                                itemBuilder: (context, index) {
+                                  final docSnapshot = news[index];
+                                  TextStyle sentimentStyle() {
+                                    if (docSnapshot.sentiment == 'MOD') {
+                                      return TextStyle(
+                                          backgroundColor: Colors.orangeAccent,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold);
+                                    } else if (docSnapshot.sentiment == 'LOW') {
+                                      return TextStyle(
+                                          backgroundColor: Colors.greenAccent,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold);
+                                    } else {
+                                      return TextStyle(
+                                          backgroundColor: Colors.red,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold);
+                                    }
+                                  }
+
+                                  DateTime myDateTime = docSnapshot.dateTime;
+                                  String formattedDateTime =
+                                      DateFormat('yyyy-MM-dd – kk:mm')
+                                          .format(myDateTime);
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => NewsDetails(
+                                                    title: docSnapshot.title,
+                                                    image: docSnapshot.image,
+                                                    details:
+                                                        docSnapshot.details,
+                                                    sentiment:
+                                                        docSnapshot.sentiment,
+                                                    prediction:
+                                                        docSnapshot.prediction,
+                                                    dateTime: formattedDateTime,
+                                                    pair: docSnapshot.pair,
+                                                  )));
+                                    },
+                                    child: ListTile(
+                                      leading: CachedNetworkImage(
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                3,
+                                        imageUrl: docSnapshot.image,
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                      title: Text(
+                                        docSnapshot.title,
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: RichText(
+                                        text: TextSpan(
+                                          text: '',
+                                          children: [
+                                            TextSpan(
+                                              text: docSnapshot.sentiment,
+                                              style: sentimentStyle(),
+                                            ),
+                                            TextSpan(
+                                              text: ' ',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            TextSpan(
+                                              text: docSnapshot.prediction,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: " ",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  formattedDateTime.toString(),
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      isThreeLine: true,
+                                      trailing: Text(
+                                        docSnapshot.pair,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          backgroundColor: Colors
+                                              .lightBlueAccent
+                                              .withOpacity(1),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })),
+                      ),
                     ],
                   ),
                 );
+              } else {
+                return Center(child: CircularProgressIndicator());
               }
-              return Container(
-                padding: EdgeInsets.only(top: 5, right: 15, left: 15),
-                child: Column(
-                  children: [
-                    // CONTAINER 1(NEWS HEADER)
-                    Container(
-                      child: Center(
-                        child: Text(
-                          '',
-                          style: TextStyle(
-                            fontSize: 23,
-                            // fontWeight: FontWeight.bold,
-                            fontFamily: 'Kaushan',
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // ROW WITH LIST OF DATEFILTERS
-                    Container(
-                      height: orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.height / 30
-                          : MediaQuery.of(context).size.height / 20,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            child: dateFilter("YESTERDAY"),
-                            onTap: () {
-                              setState(() {
-                                newsDateFilter = 'yesterday';
-                              });
-                            },
-                          ),
-                          GestureDetector(
-                            child: dateFilter("TODAY"),
-                            onTap: () {
-                              setState(() {
-                                newsDateFilter = 'today';
-                              });
-                            },
-                          ),
-                          GestureDetector(
-                            child: dateFilter("TOMORROW"),
-                            onTap: () {
-                              setState(() {
-                                newsDateFilter = 'tomorrow';
-                              });
-                            },
-                          ),
-                          GestureDetector(
-                            child: dateFilter("THIS WEEK"),
-                            onTap: () {
-                              setState(() {
-                                newsDateFilter = 'week';
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 20),
-                    // CONTAINER SHOWING TODAY'S DATE
-
-                    Container(
-                      height: orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.height / 30
-                          : MediaQuery.of(context).size.height / 17,
-                      color: Colors.green.shade50,
-                      child: Center(
-                        child: date(),
-                      ),
-                    ),
-
-                    SizedBox(height: 10),
-
-                    // CONTAINER SHOWING LIST OF CALENDARS IN FORM OF LISTTILE
-                    Container(
-                      height: orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.height / 1.6
-                          : MediaQuery.of(context).size.height / 2.7,
-                      child: Card(
-                          child: ListView.builder(
-                              itemCount: news.length,
-                              itemBuilder: (context, index) {
-                                final docSnapshot = news[index];
-                                TextStyle sentimentStyle() {
-                                  if (docSnapshot.sentiment == 'MOD') {
-                                    return TextStyle(
-                                        backgroundColor: Colors.orangeAccent,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold);
-                                  } else if (docSnapshot.sentiment == 'LOW') {
-                                    return TextStyle(
-                                        backgroundColor: Colors.greenAccent,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold);
-                                  } else {
-                                    return TextStyle(
-                                        backgroundColor: Colors.red,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold);
-                                  }
-                                }
-
-                                DateTime myDateTime = docSnapshot.dateTime;
-                                String formattedDateTime =
-                                    DateFormat('yyyy-MM-dd – kk:mm')
-                                        .format(myDateTime);
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => NewsDetails(
-                                                  title: docSnapshot.title,
-                                                  image: docSnapshot.image,
-                                                  details: docSnapshot.details,
-                                                  sentiment:
-                                                      docSnapshot.sentiment,
-                                                  prediction:
-                                                      docSnapshot.prediction,
-                                                  dateTime: formattedDateTime,
-                                                  pair: docSnapshot.pair,
-                                                )));
-                                  },
-                                  child: ListTile(
-                                    leading: CachedNetworkImage(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              3,
-                                      imageUrl: docSnapshot.image,
-                                      placeholder: (context, url) =>
-                                          CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
-                                    title: Text(
-                                      docSnapshot.title,
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: RichText(
-                                      text: TextSpan(
-                                        text: '',
-                                        children: [
-                                          TextSpan(
-                                            text: docSnapshot.sentiment,
-                                            style: sentimentStyle(),
-                                          ),
-                                          TextSpan(
-                                            text: ' ',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          TextSpan(
-                                            text: docSnapshot.prediction,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: " ",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: formattedDateTime.toString(),
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    isThreeLine: true,
-                                    trailing: Text(
-                                      docSnapshot.pair,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        backgroundColor: Colors.lightBlueAccent
-                                            .withOpacity(1),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              })),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          }),
+            }),
+      ),
     );
   }
 

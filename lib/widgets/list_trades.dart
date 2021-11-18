@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:pipshub/authentication/authentication.dart';
 import 'package:pipshub/models/trade.dart';
 import 'package:pipshub/provider/trades.dart';
 import 'package:pipshub/screens/trades/trade_details.dart';
@@ -24,8 +23,7 @@ class _ListTradesState extends State<ListTrades> {
     final profit = Icon(FontAwesomeIcons.checkCircle, color: Colors.green);
     final loss = Icon(FontAwesomeIcons.timesCircle, color: Colors.red);
     final trade = Provider.of<Trades>(context);
-    final uName = Provider.of<AuthenticationService>(context, listen: false)
-        .getCurrentUname();
+
     final oopstrade = tradeDateFilter.toUpperCase();
     streamFilter() {
       if (tradeDateFilter == 'today') {
@@ -60,13 +58,13 @@ class _ListTradesState extends State<ListTrades> {
                     style: DefaultTextStyle.of(context).style,
                     children: [
                       TextSpan(
-                          text: 'Welcome, ',
+                          text: 'Welcome ',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: 'courgette',
                               fontSize: 16)),
                       TextSpan(
-                        text: uName,
+                        text: "Back :)",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 17),
                       ),
