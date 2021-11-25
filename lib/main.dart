@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:double_back_to_close/double_back_to_close.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
@@ -166,7 +167,16 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Pips Hub',
           debugShowCheckedModeBanner: false,
-          home: AuthenticationWrapper(),
+          home: DoubleBack(
+              onFirstBackPress: (context) {
+                // you can use your custom here
+                // change this with your custom action
+                final snackBar =
+                    SnackBar(content: Text('Press back again to exit'));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                // ---
+              },
+              child: AuthenticationWrapper()),
         ),
       ),
     );

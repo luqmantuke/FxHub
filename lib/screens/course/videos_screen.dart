@@ -42,12 +42,14 @@ class _VideosScreenState extends State<VideosScreen> {
   void initState() {
     super.initState();
     _createInterstitialAd();
+    _createBottomBannerAd();
   }
 
   @override
   void dispose() {
     super.dispose();
     _interstitialAd?.dispose();
+    _createBottomBannerAd();
   }
 
   void _showInterstitialAd() {
@@ -66,6 +68,27 @@ class _VideosScreenState extends State<VideosScreen> {
     }
   }
 
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+  void _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLoading = false;
@@ -77,77 +100,80 @@ class _VideosScreenState extends State<VideosScreen> {
       ),
       body: Column(children: [
         Container(
-            padding: EdgeInsets.only(top: 15, right: 10, left: 10),
-            height: MediaQuery.of(context).size.height / 1.8,
-            child: FutureBuilder<QuerySnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('course')
-                    .doc(widget.courseId)
-                    .collection("videos")
-                    .orderBy("videoName", descending: false)
-                    .get(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    // <3> Retrieve `List<DocumentSnapshot>` from snapshot
-                    final List<DocumentSnapshot> documents =
-                        snapshot.data!.docs;
-                    return ListView(
-                        children: documents
-                            .map((doc) => GestureDetector(
-                                  onTap: isLoading == true
-                                      ? null
-                                      : () async {
-                                          _showInterstitialAd();
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      VideoDetails(
-                                                        videoUrl:
-                                                            doc['videoUrl'],
-                                                        videoName:
-                                                            doc['videoName'],
-                                                      )));
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                        },
-                                  child: Card(
-                                    child: ListTile(
-                                      title: isLoading == true
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator())
-                                          : Text(
-                                              isLoading == true
-                                                  ? "Opening...."
-                                                  : doc['videoName'],
-                                              style: isLoading == true
-                                                  ? TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      backgroundColor: Colors
-                                                          .tealAccent.shade100,
-                                                      color: Colors.black,
-                                                      fontSize: 17)
-                                                  : TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17),
-                                            ),
-                                      trailing: Icon(
-                                          Icons.arrow_right_alt_sharp,
-                                          size: 35),
-                                    ),
+          padding: EdgeInsets.only(top: 15, right: 10, left: 10),
+          height: MediaQuery.of(context).size.height / 1.4,
+          child: FutureBuilder<QuerySnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('course')
+                  .doc(widget.courseId)
+                  .collection("videos")
+                  .orderBy("videoName", descending: false)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // <3> Retrieve `List<DocumentSnapshot>` from snapshot
+                  final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                  return ListView(
+                      children: documents
+                          .map((doc) => GestureDetector(
+                                onTap: isLoading == true
+                                    ? null
+                                    : () async {
+                                        _showInterstitialAd();
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    VideoDetails(
+                                                      videoUrl: doc['videoUrl'],
+                                                      videoName:
+                                                          doc['videoName'],
+                                                    )));
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                      },
+                                child: Card(
+                                  child: ListTile(
+                                    title: isLoading == true
+                                        ? Center(
+                                            child: CircularProgressIndicator())
+                                        : Text(
+                                            isLoading == true
+                                                ? "Opening...."
+                                                : doc['videoName'],
+                                            style: isLoading == true
+                                                ? TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    backgroundColor: Colors
+                                                        .tealAccent.shade100,
+                                                    color: Colors.black,
+                                                    fontSize: 17)
+                                                : TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 17),
+                                          ),
+                                    trailing: Icon(Icons.arrow_right_alt_sharp,
+                                        size: 35),
                                   ),
-                                ))
-                            .toList());
-                  } else if (snapshot.hasError) {
-                    return Text('Sorry Seems There is An Error. Plese report');
-                    // ignore: unnecessary_null_comparison
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }))
+                                ),
+                              ))
+                          .toList());
+                } else if (snapshot.hasError) {
+                  return Text('Sorry Seems There is An Error. Plese report');
+                  // ignore: unnecessary_null_comparison
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
+        ),
+        SizedBox(height: 25),
+        _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(ad: _bottomBannerAd),
+              )
+            : Container(),
       ]),
     );
   }

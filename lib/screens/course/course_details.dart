@@ -57,7 +57,7 @@ class _CourseDetailsState extends State<CourseDetails> {
   @override
   void dispose() {
     super.dispose();
-    _bottomBannerAd.dispose();
+    _createBottomBannerAd();
   }
 
   @override
